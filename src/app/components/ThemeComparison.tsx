@@ -9,6 +9,7 @@ import {
   Text,
   Select,
   Switch,
+  useMantineTheme,
 } from "@mantine/core";
 import DetailedThemePreview from "./DetailedThemePreview";
 import { Theme } from "../utils/presets";
@@ -26,9 +27,9 @@ export default function ThemeComparison({
   currentThemeName,
   onThemeModeChange,
 }: ThemeComparisonProps) {
-  console.log(currentTheme);
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(currentTheme.dark);
+  const theme = useMantineTheme();
 
   const handleThemeModeChange = (checked: boolean) => {
     setIsDarkMode(checked);
@@ -55,24 +56,23 @@ export default function ThemeComparison({
     : [];
 
   return (
-    <Paper p="md">
+    <Paper p="xl" radius="md" style={{ backgroundColor: theme.colors.gray[0] }}>
       <Stack p="md">
-        <Title style={{ color: "black" }} order={2}>
+        <Title order={2} style={{ color: theme.colors.dark[6] }}>
           Theme Comparison
         </Title>
 
-        <Group>
+        <Group align="flex-end">
           <Select
             label="Select preset for comparison"
             data={Object.keys(presets)}
             value={selectedPreset}
             onChange={setSelectedPreset}
-            style={{ flex: 1, color: "black" }}
+            style={{ flex: 1 }}
             styles={{
               label: { color: "black" },
-              input: { color: "black" },
+              option: { color: "black" },
             }}
-            scrollAreaProps={{ style: { color: "black" } }}
           />
           <Switch
             label="Dark Mode"
@@ -80,34 +80,65 @@ export default function ThemeComparison({
             onChange={(event) =>
               handleThemeModeChange(event.currentTarget.checked)
             }
+            styles={{
+              label: { color: theme.colors.dark[6] },
+            }}
           />
         </Group>
 
         {selectedPreset && (
           <Group grow>
             <Stack>
-              <Title order={3}>{selectedPreset} Preset</Title>
+              <Title order={3} style={{ color: theme.colors.dark[6] }}>
+                {selectedPreset} Preset
+              </Title>
               <DetailedThemePreview
                 theme={presetTheme!}
                 name={selectedPreset}
               />
             </Stack>
             <Stack>
-              <Title order={3}>{currentThemeName}</Title>
+              <Title order={3} style={{ color: theme.colors.dark[6] }}>
+                {currentThemeName}
+              </Title>
               <DetailedThemePreview theme={currentTheme} name="Your Preset" />
             </Stack>
           </Group>
         )}
 
-        {selectedPreset && (
-          <>
-            <Title order={3}>Differences</Title>
-            {differences.length > 0 ? (
-              differences.map((diff, index) => <Text key={index}>{diff}</Text>)
-            ) : (
-              <Text>No differences found.</Text>
-            )}
-          </>
+        {selectedPreset && differences.length > 0 && (
+          <Paper
+            p="md"
+            radius="sm"
+            style={{ backgroundColor: theme.colors.gray[1] }}
+          >
+            <Title
+              order={3}
+              style={{
+                color: theme.colors.dark[6],
+                marginBottom: theme.spacing.sm,
+              }}
+            >
+              Differences
+            </Title>
+            {differences.map((diff, index) => (
+              <Text key={index} style={{ color: theme.colors.dark[6] }}>
+                {diff}
+              </Text>
+            ))}
+          </Paper>
+        )}
+
+        {selectedPreset && differences.length === 0 && (
+          <Paper
+            p="md"
+            radius="sm"
+            style={{ backgroundColor: theme.colors.gray[1] }}
+          >
+            <Text style={{ color: theme.colors.dark[6] }}>
+              No differences found.
+            </Text>
+          </Paper>
         )}
       </Stack>
     </Paper>

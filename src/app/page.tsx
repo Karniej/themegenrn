@@ -79,6 +79,7 @@ export default function Home() {
   const [shareURL, setShareURL] = useState("");
   const [showComparison, setShowComparison] = useState(false);
   const [comparisonPreset, setComparisonPreset] = useState<string | null>(null);
+  const isDark = currentTheme === "dark";
 
   const handleCompare = () => {
     setShowComparison(true);
@@ -160,6 +161,15 @@ export default function Home() {
     }
   }, []);
 
+  const theme = useMantineTheme();
+  // Apply the current theme to the container if applyToWebsite is true
+  const containerStyle = applyToWebsite
+    ? {
+        backgroundColor: currentThemes[currentTheme].colors.background,
+        color: currentThemes[currentTheme].colors.text,
+      }
+    : {};
+
   useEffect(() => {
     if (applyToWebsite) {
       document.body.style.backgroundColor =
@@ -171,14 +181,13 @@ export default function Home() {
     }
   }, [applyToWebsite, currentTheme, currentThemes]);
 
-  const theme = useMantineTheme();
-
   return (
     <Box
       style={{
         backgroundColor: theme.colors.gray[0],
         minHeight: "100vh",
         padding: theme.spacing.xl,
+        ...containerStyle, // Apply the current theme if applyToWebsite is true
       }}
     >
       <Container size="lg">
@@ -187,8 +196,12 @@ export default function Home() {
             p="xl"
             radius="md"
             style={{
-              background: `linear-gradient(135deg, ${theme.colors.blue[6]}, ${theme.colors.indigo[6]})`,
-              color: theme.white,
+              background: applyToWebsite
+                ? currentThemes[currentTheme].colors.card
+                : `linear-gradient(135deg, ${theme.colors.blue[6]}, ${theme.colors.indigo[6]})`,
+              color: applyToWebsite
+                ? currentThemes[currentTheme].colors.text
+                : theme.white,
             }}
           >
             <Title
@@ -210,6 +223,11 @@ export default function Home() {
               value={currentPresetName || undefined}
               onChange={(value) => value && handlePresetChange(value)}
               style={{ minWidth: 200 }}
+              styles={{
+                option: {
+                  color: "black",
+                },
+              }}
             />
             <Group>
               <Switch
@@ -302,6 +320,7 @@ export default function Home() {
             darkTheme={currentThemes.dark}
             setLightTheme={(theme) => addToHistory(theme, currentThemes.dark)}
             setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
+            themeName={themeName}
           />
         </Stack>
       </Container>

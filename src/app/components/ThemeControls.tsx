@@ -8,9 +8,9 @@ import {
   ColorInput,
   useMantineTheme,
   Paper,
-  ColorPicker,
+  Title,
 } from "@mantine/core";
-import { Theme } from "../utils/themeUtils";
+import { Theme } from "../utils/presets";
 
 interface ThemeControlsProps {
   theme: Theme;
@@ -25,17 +25,28 @@ export default function ThemeControls({
 
   return (
     <Paper
-      p="md"
+      p="xl"
       radius="md"
-      style={{ backgroundColor: mantineTheme.colors.gray[1] }}
+      style={{
+        backgroundColor: mantineTheme.colors.gray[0],
+        boxShadow: mantineTheme.shadows.sm,
+      }}
     >
       <Stack p="md">
-        <Text size="xl" style={{ fontWeight: 700 }}>
+        <Title order={2} style={{ color: mantineTheme.colors.dark[6] }}>
           Theme Colors
-        </Text>
+        </Title>
         {Object.entries(theme.colors).map(([key, value]) => (
           <Group key={key} justify="space-between" align="center">
-            <Text>{key.charAt(0).toUpperCase() + key.slice(1)}</Text>
+            <Text
+              style={{
+                color: mantineTheme.colors.dark[6],
+                fontWeight: 500,
+                textTransform: "capitalize",
+              }}
+            >
+              {key}
+            </Text>
             <ColorInput
               value={value}
               onChange={(color) =>
@@ -58,6 +69,10 @@ export default function ThemeControls({
                 "#fab005",
                 "#fd7e14",
               ]}
+              styles={{
+                input: { width: "120px" },
+                preview: { boxShadow: mantineTheme.shadows.sm },
+              }}
             />
           </Group>
         ))}
