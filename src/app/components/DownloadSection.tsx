@@ -1,4 +1,5 @@
 /** @format */
+"use_client";
 
 import React, { useState, useRef } from "react";
 import { Stack, TextInput, Button, Group } from "@mantine/core";

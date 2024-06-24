@@ -1,4 +1,5 @@
 /** @format */
+"use_client";
 
 import React from "react";
 import { Paper, Text, Button, Stack, Group, Card } from "@mantine/core";
@@ -6,10 +7,12 @@ import { Theme } from "../utils/presets";
 
 interface DetailedThemePreviewProps {
   theme: Theme;
+  name: string;
 }
 
 export default function DetailedThemePreview({
   theme,
+  name,
 }: DetailedThemePreviewProps) {
   return (
     <Paper
@@ -21,7 +24,7 @@ export default function DetailedThemePreview({
     >
       <Stack spacing="md">
         <Text size="xl" weight={700}>
-          Detailed Theme Preview
+          {name}
         </Text>
 
         {/* Header */}

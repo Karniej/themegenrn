@@ -25,17 +25,3 @@ export function generateHarmonies(color: string) {
 }
 
 extend([a11yPlugin, harmoniesPlugin]);
-
-export function generateColorPalette(baseColor: string) {
-  const base = colord(baseColor);
-  return {
-    primary: base.toRgbString(),
-    lighten10: base.lighten(0.1).toRgbString(),
-    lighten20: base.lighten(0.2).toRgbString(),
-    darken10: base.darken(0.1).toRgbString(),
-    darken20: base.darken(0.2).toRgbString(),
-    complement: generateHarmonies(baseColor).complement,
-    analogous1: generateHarmonies(baseColor).analogous,
-    triadic1: generateHarmonies(baseColor).triadic,
-  };
-}

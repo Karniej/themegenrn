@@ -1,31 +1,34 @@
 /** @format */
 
 "use client";
-
 import { useState, useEffect } from "react";
 import {
   Container,
   Title,
-  ColorPicker,
   Stack,
-  Text,
   TextInput,
   Button,
   Group,
   Switch,
-  Paper,
   Select,
-  Alert,
+  Modal,
 } from "@mantine/core";
-import { colord, random, AnyColor, extend, Colord } from "colord";
+import { colord, extend } from "colord";
 import a11yPlugin from "colord/plugins/a11y";
 import harmoniesPlugin from "colord/plugins/harmonies";
 import { presets } from "./utils/presets";
 import AccessibilityWarnings from "./components/AccessibilityWarnings";
 import ThemeControls from "./components/ThemeControls";
 import DownloadSection from "./components/DownloadSection";
-import ThemePreview from "./components/ThemePreview";
 import DetailedThemePreview from "./components/DetailedThemePreview";
+import {
+  decodeThemeFromURL,
+  encodeThemeToURL,
+  generateDarkTheme,
+  generatePalette,
+} from "./utils/themeUtils";
+import { useThemeHistory } from "./hooks/useThemeHistory";
+import ThemeComparison from "./components/ThemeComparison";
 
 extend([a11yPlugin, harmoniesPlugin]);
 
@@ -43,26 +46,36 @@ type Theme = {
 
 export default function Home() {
   const [themeName, setThemeName] = useState("MyTheme");
-  const [lightTheme, setLightTheme] = useState<Theme>(presets.Default.light);
-  const [darkTheme, setDarkTheme] = useState<Theme>(presets.Default.dark);
+  const {
+    currentThemes,
+    currentPresetName,
+    addToHistory,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  } = useThemeHistory(presets.Default.light, presets.Default.dark);
+
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("light");
   const [applyToWebsite, setApplyToWebsite] = useState(false);
   const [accessibilityWarnings, setAccessibilityWarnings] = useState<string[]>(
     [],
   );
+  const [shareURL, setShareURL] = useState("");
+  const [showComparison, setShowComparison] = useState(false);
+  const [comparisonPreset, setComparisonPreset] = useState<string | null>(null);
 
-  const isLightTheme = currentTheme === "light";
+  const handleCompare = () => {
+    setShowComparison(true);
+  };
 
   const updateTheme = (key: keyof Theme["colors"], value: string) => {
-    const newTheme = isLightTheme ? { ...lightTheme } : { ...darkTheme };
-    newTheme.colors[key] = value;
-
-    if (isLightTheme) {
-      setLightTheme(newTheme);
-    } else {
-      setDarkTheme(newTheme);
-    }
-
+    const newTheme = {
+      ...currentThemes[currentTheme],
+      colors: { ...currentThemes[currentTheme].colors, [key]: value },
+    };
+    const updatedThemes = { ...currentThemes, [currentTheme]: newTheme };
+    addToHistory(updatedThemes.light, updatedThemes.dark);
     checkAccessibility(newTheme);
   };
 
@@ -88,40 +101,60 @@ export default function Home() {
   };
 
   const handlePresetChange = (presetName: string) => {
-    setLightTheme(presets[presetName].light);
-    setDarkTheme(presets[presetName].dark);
-    checkAccessibility(
-      isLightTheme ? presets[presetName].light : presets[presetName].dark,
-    );
+    if (presets[presetName]) {
+      const newLightTheme = { ...presets[presetName].light };
+      const newDarkTheme = { ...presets[presetName].dark };
+      addToHistory(newLightTheme, newDarkTheme);
+      checkAccessibility(
+        currentTheme === "light" ? newLightTheme : newDarkTheme,
+      );
+    }
+  };
+
+  const handleGeneratePalette = () => {
+    // Generate a random color
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+
+    // Use the generateColorPalette function to create a full theme
+    const { light, dark } = generatePalette(randomColor);
+
+    // Add the new themes to history
+    addToHistory(light, dark);
+
+    // Update the current theme
+    setCurrentTheme(currentTheme); // This triggers a re-render with the new theme
+
+    // Check accessibility for the current theme
+    checkAccessibility(currentTheme === "light" ? light : dark);
+  };
+
+  const shareTheme = () => {
+    const url = encodeThemeToURL(currentThemes);
+    setShareURL(url);
+  };
+
+  const syncDarkTheme = () => {
+    const darkTheme = generateDarkTheme(currentThemes.light);
+    addToHistory(currentThemes.light, darkTheme);
   };
 
   useEffect(() => {
-    if (applyToWebsite) {
-      document.body.style.backgroundColor = isLightTheme
-        ? lightTheme.colors.background
-        : darkTheme.colors.background;
-      document.body.style.color = isLightTheme
-        ? lightTheme.colors.text
-        : darkTheme.colors.text;
-    } else {
-      document.body.style.backgroundColor = "";
-      document.body.style.color = "";
+    const sharedTheme = decodeThemeFromURL();
+    if (sharedTheme) {
+      addToHistory(sharedTheme.light, sharedTheme.dark);
     }
-  }, [applyToWebsite, currentTheme, lightTheme, darkTheme]);
+  }, []);
 
   useEffect(() => {
     if (applyToWebsite) {
-      document.body.style.backgroundColor = isLightTheme
-        ? lightTheme.colors.background
-        : darkTheme.colors.background;
-      document.body.style.color = isLightTheme
-        ? lightTheme.colors.text
-        : darkTheme.colors.text;
+      document.body.style.backgroundColor =
+        currentThemes[currentTheme].colors.background;
+      document.body.style.color = currentThemes[currentTheme].colors.text;
     } else {
       document.body.style.backgroundColor = "";
       document.body.style.color = "";
     }
-  }, [applyToWebsite, currentTheme, lightTheme, darkTheme]);
+  }, [applyToWebsite, currentTheme, currentThemes]);
 
   return (
     <Container
@@ -129,12 +162,8 @@ export default function Home() {
       style={
         applyToWebsite
           ? {
-              backgroundColor: isLightTheme
-                ? lightTheme.colors.background
-                : darkTheme.colors.background,
-              color: isLightTheme
-                ? lightTheme.colors.text
-                : darkTheme.colors.text,
+              backgroundColor: currentThemes[currentTheme].colors.background,
+              color: currentThemes[currentTheme].colors.text,
             }
           : {}
       }
@@ -147,51 +176,92 @@ export default function Home() {
         <Select
           label="Choose a preset"
           data={Object.keys(presets)}
+          value={currentPresetName || undefined}
+          onChange={(value) => value && handlePresetChange(value)}
           scrollAreaProps={{
             style: {
-              color: isLightTheme
-                ? lightTheme.colors.text
-                : darkTheme.colors.text,
+              color: "black",
             },
           }}
-          labelProps={{
-            style: {
-              color: isLightTheme
-                ? lightTheme.colors.text
-                : darkTheme.colors.text,
-            },
-          }}
-          onChange={(value) => value && handlePresetChange(value)}
+          placeholder="Choose a preset"
         />
 
-        <Switch
-          checked={isLightTheme}
-          onChange={() =>
-            setCurrentTheme((prev) => (prev === "light" ? "dark" : "light"))
-          }
-          label={`Current Theme: ${isLightTheme ? "Light" : "Dark"}`}
-        />
+        <Group>
+          <Switch
+            checked={currentTheme === "dark"}
+            onChange={() =>
+              setCurrentTheme((prev) => (prev === "light" ? "dark" : "light"))
+            }
+            label={`Current Theme: ${
+              currentTheme === "light" ? "Light" : "Dark"
+            }`}
+          />
+          <Switch
+            checked={applyToWebsite}
+            onChange={(event) => setApplyToWebsite(event.currentTarget.checked)}
+            label="Apply theme to website"
+          />
+          <Group justify="space-between">
+            <Button onClick={handleCompare}>Compare with Preset</Button>
+            <Button onClick={handleGeneratePalette}>
+              Generate Color Palette
+            </Button>
 
-        <Switch
-          checked={applyToWebsite}
-          onChange={(event) => setApplyToWebsite(event.currentTarget.checked)}
-          label="Apply theme to website"
-        />
+            {/* <Button onClick={handleGenerateAccessibleTheme}>
+              Generate a theme
+            </Button> */}
+          </Group>
+        </Group>
+        <Modal
+          opened={showComparison}
+          onClose={() => setShowComparison(false)}
+          size="xl"
+        >
+          <ThemeComparison
+            currentTheme={currentThemes[currentTheme]}
+            presets={presets}
+            onThemeModeChange={(isDark) =>
+              setCurrentTheme(isDark ? "dark" : "light")
+            }
+            currentThemeName="Current Theme"
+          />
+        </Modal>
+        <Group>
+          <Button onClick={shareTheme}>Share Theme</Button>
+          <Button onClick={syncDarkTheme}>Sync Dark Theme</Button>
+          <Button onClick={undo} disabled={!canUndo}>
+            Undo
+          </Button>
+          <Button onClick={redo} disabled={!canRedo}>
+            Redo
+          </Button>
+        </Group>
+
+        {shareURL && (
+          <TextInput
+            label="Share URL"
+            value={shareURL}
+            readOnly
+            onClick={(event) => event.currentTarget.select()}
+          />
+        )}
 
         <ThemeControls
-          theme={isLightTheme ? lightTheme : darkTheme}
+          theme={currentThemes[currentTheme]}
           updateTheme={updateTheme}
         />
 
         <AccessibilityWarnings warnings={accessibilityWarnings} />
 
-        <DetailedThemePreview theme={isLightTheme ? lightTheme : darkTheme} />
+        <DetailedThemePreview theme={currentThemes[currentTheme]} />
 
         <DownloadSection
           themeName={themeName}
           setThemeName={setThemeName}
-          lightTheme={lightTheme}
-          darkTheme={darkTheme}
+          lightTheme={currentThemes.light}
+          darkTheme={currentThemes.dark}
+          setLightTheme={(theme) => addToHistory(theme, currentThemes.dark)}
+          setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
         />
       </Stack>
     </Container>

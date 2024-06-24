@@ -1,5 +1,7 @@
 /** @format */
 
+"use_client";
+
 import React from "react";
 import { Stack } from "@mantine/core";
 import ColorPicker from "./ColorPicker";

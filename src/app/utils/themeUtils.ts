@@ -49,3 +49,54 @@ export function generateDarkTheme(lightTheme: Theme): Theme {
 
   return darkTheme;
 }
+
+function getContrastColor(
+  color: string,
+  darkColor: string,
+  lightColor: string,
+): string {
+  return colord(color).contrast(colord(darkColor)) >= 4.5
+    ? darkColor
+    : lightColor;
+}
+
+export function generatePalette(primaryColor: string): {
+  light: Theme;
+  dark: Theme;
+} {
+  const base = colord(primaryColor);
+
+  const lightTheme: Theme = {
+    dark: false,
+    colors: {
+      primary: base.toRgbString(),
+      background: base.lighten(0.4).desaturate(0.2).toRgbString(),
+      card: "#FFFFFF",
+      text: getContrastColor(
+        base.lighten(0.4).desaturate(0.2).toRgbString(),
+        "#000000",
+        "#FFFFFF",
+      ),
+      border: base.lighten(0.2).desaturate(0.1).toRgbString(),
+      notification: base.rotate(180).saturate(0.2).toRgbString(),
+    },
+  };
+
+  const darkTheme: Theme = {
+    dark: true,
+    colors: {
+      primary: base.lighten(0.1).saturate(0.1).toRgbString(),
+      background: base.darken(0.8).desaturate(0.2).toRgbString(),
+      card: base.darken(0.6).desaturate(0.1).toRgbString(),
+      text: getContrastColor(
+        base.darken(0.8).desaturate(0.2).toRgbString(),
+        "#FFFFFF",
+        "#000000",
+      ),
+      border: base.darken(0.4).desaturate(0.1).toRgbString(),
+      notification: base.rotate(180).lighten(0.2).saturate(0.2).toRgbString(),
+    },
+  };
+
+  return { light: lightTheme, dark: darkTheme };
+}

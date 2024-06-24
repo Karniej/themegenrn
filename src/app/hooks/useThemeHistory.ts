@@ -1,16 +1,18 @@
 /** @format */
+"use_client";
 
 import { useState } from "react";
 import { Theme } from "../utils/presets";
 
 interface HistoryEntry {
+  presetName: string;
   light: Theme;
   dark: Theme;
 }
 
 export function useThemeHistory(initialLight: Theme, initialDark: Theme) {
   const [history, setHistory] = useState<HistoryEntry[]>([
-    { light: initialLight, dark: initialDark },
+    { presetName: "Default", light: initialLight, dark: initialDark },
   ]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -19,7 +21,7 @@ export function useThemeHistory(initialLight: Theme, initialDark: Theme) {
 
   const addToHistory = (light: Theme, dark: Theme) => {
     const newHistory = history.slice(0, currentIndex + 1);
-    newHistory.push({ light, dark });
+    newHistory.push({ presetName: "Default", light, dark });
     setHistory(newHistory);
     setCurrentIndex(newHistory.length - 1);
   };
@@ -38,6 +40,7 @@ export function useThemeHistory(initialLight: Theme, initialDark: Theme) {
 
   return {
     currentThemes: history[currentIndex],
+    currentPresetName: history[currentIndex].presetName,
     addToHistory,
     undo,
     redo,

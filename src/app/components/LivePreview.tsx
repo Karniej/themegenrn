@@ -1,4 +1,5 @@
 /** @format */
+"use_client";
 
 import React from "react";
 import { Paper, Button, Text, Stack } from "@mantine/core";
