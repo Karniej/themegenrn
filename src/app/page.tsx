@@ -70,16 +70,15 @@ export default function Home() {
     redo,
     canUndo,
     canRedo,
-  } = useThemeHistory(presets.Default.light, presets.Default.dark);
+  } = useThemeHistory(presets.Gruvbox.light, presets.Gruvbox.dark);
 
-  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("light");
+  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("dark");
   const [applyToWebsite, setApplyToWebsite] = useState(true);
   const [accessibilityWarnings, setAccessibilityWarnings] = useState<string[]>(
     [],
   );
   const [shareURL, setShareURL] = useState("");
   const [showComparison, setShowComparison] = useState(false);
-  const [comparisonPreset, setComparisonPreset] = useState<string | null>(null);
   const isDark = currentTheme === "dark";
 
   const handleCompare = () => {
