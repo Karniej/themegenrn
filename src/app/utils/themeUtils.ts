@@ -42,8 +42,6 @@ export function generateDarkTheme(lightTheme: Theme): Theme {
       case "border":
         darkTheme.colors[key] = color.darken(0.5).toRgbString();
         break;
-      default:
-        darkTheme.colors[key] = color.saturate(0.1).toRgbString();
     }
   }
 
