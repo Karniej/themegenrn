@@ -50,13 +50,14 @@ export default function Home() {
   const [accessibilityWarnings, setAccessibilityWarnings] = useState<string[]>(
     [],
   );
+  const [shareURL, setShareURL] = useState("");
+  const isLightTheme = currentTheme === "light";
 
   const updateTheme = (key: keyof Theme["colors"], value: string) => {
-    const newTheme =
-      currentTheme === "light" ? { ...lightTheme } : { ...darkTheme };
+    const newTheme = isLightTheme ? { ...lightTheme } : { ...darkTheme };
     newTheme.colors[key] = value;
 
-    if (currentTheme === "light") {
+    if (isLightTheme) {
       setLightTheme(newTheme);
     } else {
       setDarkTheme(newTheme);
@@ -90,22 +91,18 @@ export default function Home() {
     setLightTheme(presets[presetName].light);
     setDarkTheme(presets[presetName].dark);
     checkAccessibility(
-      currentTheme === "light"
-        ? presets[presetName].light
-        : presets[presetName].dark,
+      isLightTheme ? presets[presetName].light : presets[presetName].dark,
     );
   };
 
   useEffect(() => {
     if (applyToWebsite) {
-      document.body.style.backgroundColor =
-        currentTheme === "light"
-          ? lightTheme.colors.background
-          : darkTheme.colors.background;
-      document.body.style.color =
-        currentTheme === "light"
-          ? lightTheme.colors.text
-          : darkTheme.colors.text;
+      document.body.style.backgroundColor = isLightTheme
+        ? lightTheme.colors.background
+        : darkTheme.colors.background;
+      document.body.style.color = isLightTheme
+        ? lightTheme.colors.text
+        : darkTheme.colors.text;
     } else {
       document.body.style.backgroundColor = "";
       document.body.style.color = "";
@@ -114,14 +111,12 @@ export default function Home() {
 
   useEffect(() => {
     if (applyToWebsite) {
-      document.body.style.backgroundColor =
-        currentTheme === "light"
-          ? lightTheme.colors.background
-          : darkTheme.colors.background;
-      document.body.style.color =
-        currentTheme === "light"
-          ? lightTheme.colors.text
-          : darkTheme.colors.text;
+      document.body.style.backgroundColor = isLightTheme
+        ? lightTheme.colors.background
+        : darkTheme.colors.background;
+      document.body.style.color = isLightTheme
+        ? lightTheme.colors.text
+        : darkTheme.colors.text;
     } else {
       document.body.style.backgroundColor = "";
       document.body.style.color = "";
@@ -134,14 +129,12 @@ export default function Home() {
       style={
         applyToWebsite
           ? {
-              backgroundColor:
-                currentTheme === "light"
-                  ? lightTheme.colors.background
-                  : darkTheme.colors.background,
-              color:
-                currentTheme === "light"
-                  ? lightTheme.colors.text
-                  : darkTheme.colors.text,
+              backgroundColor: isLightTheme
+                ? lightTheme.colors.background
+                : darkTheme.colors.background,
+              color: isLightTheme
+                ? lightTheme.colors.text
+                : darkTheme.colors.text,
             }
           : {}
       }
@@ -154,17 +147,29 @@ export default function Home() {
         <Select
           label="Choose a preset"
           data={Object.keys(presets)}
+          scrollAreaProps={{
+            style: {
+              color: isLightTheme
+                ? lightTheme.colors.text
+                : darkTheme.colors.text,
+            },
+          }}
+          labelProps={{
+            style: {
+              color: isLightTheme
+                ? lightTheme.colors.text
+                : darkTheme.colors.text,
+            },
+          }}
           onChange={(value) => value && handlePresetChange(value)}
         />
 
         <Switch
-          checked={currentTheme === "dark"}
+          checked={isLightTheme}
           onChange={() =>
             setCurrentTheme((prev) => (prev === "light" ? "dark" : "light"))
           }
-          label={`Current Theme: ${
-            currentTheme === "light" ? "Light" : "Dark"
-          }`}
+          label={`Current Theme: ${isLightTheme ? "Light" : "Dark"}`}
         />
 
         <Switch
@@ -174,13 +179,13 @@ export default function Home() {
         />
 
         <ThemeControls
-          theme={currentTheme === "light" ? lightTheme : darkTheme}
+          theme={isLightTheme ? lightTheme : darkTheme}
           updateTheme={updateTheme}
         />
 
         <AccessibilityWarnings warnings={accessibilityWarnings} />
 
-        <DetailedThemePreview lightTheme={lightTheme} darkTheme={darkTheme} />
+        <DetailedThemePreview theme={isLightTheme ? lightTheme : darkTheme} />
 
         <DownloadSection
           themeName={themeName}
