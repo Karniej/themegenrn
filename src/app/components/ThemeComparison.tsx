@@ -10,8 +10,8 @@ import {
   Select,
   Switch,
 } from "@mantine/core";
-import { Theme } from "../utils/themeUtils";
 import DetailedThemePreview from "./DetailedThemePreview";
+import { Theme } from "../utils/presets";
 
 interface ThemeComparisonProps {
   currentTheme: Theme;
@@ -56,7 +56,7 @@ export default function ThemeComparison({
 
   return (
     <Paper p="md">
-      <Stack spacing="md">
+      <Stack p="md">
         <Title style={{ color: "black" }} order={2}>
           Theme Comparison
         </Title>

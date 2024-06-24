@@ -12,7 +12,22 @@ import {
   Switch,
   Select,
   Modal,
+  Paper,
+  Box,
+  Text,
+  useMantineTheme,
 } from "@mantine/core";
+import {
+  IconPalette,
+  IconShare,
+  IconMoon,
+  IconSun,
+  IconDownload,
+  IconArrowLeft,
+  IconArrowRight,
+  IconArrowsUpDown,
+  IconArrowsLeftRight,
+} from "@tabler/icons-react";
 import { colord, extend } from "colord";
 import a11yPlugin from "colord/plugins/a11y";
 import harmoniesPlugin from "colord/plugins/harmonies";
@@ -156,114 +171,155 @@ export default function Home() {
     }
   }, [applyToWebsite, currentTheme, currentThemes]);
 
+  const theme = useMantineTheme();
+
   return (
-    <Container
-      size="lg"
-      style={
-        applyToWebsite
-          ? {
-              backgroundColor: currentThemes[currentTheme].colors.background,
-              color: currentThemes[currentTheme].colors.text,
-            }
-          : {}
-      }
+    <Box
+      style={{
+        backgroundColor: theme.colors.gray[0],
+        minHeight: "100vh",
+        padding: theme.spacing.xl,
+      }}
     >
-      <Stack spacing="xl">
-        <Title order={1} align="center" mt="xl">
-          React Navigation Theme Generator
-        </Title>
+      <Container size="lg">
+        <Stack p="xl">
+          <Paper
+            p="xl"
+            radius="md"
+            style={{
+              background: `linear-gradient(135deg, ${theme.colors.blue[6]}, ${theme.colors.indigo[6]})`,
+              color: theme.white,
+            }}
+          >
+            <Title
+              order={1}
+              ta="center"
+              style={{ fontSize: "2.5rem", marginBottom: theme.spacing.md }}
+            >
+              React Navigation Theme Generator
+            </Title>
+            <Text ta="center" size="lg">
+              Create and customize beautiful themes with ease
+            </Text>
+          </Paper>
 
-        <Select
-          label="Choose a preset"
-          data={Object.keys(presets)}
-          value={currentPresetName || undefined}
-          onChange={(value) => value && handlePresetChange(value)}
-          scrollAreaProps={{
-            style: {
-              color: "black",
-            },
-          }}
-          placeholder="Choose a preset"
-        />
+          <Group justify="space-between" align="flex-end">
+            <Select
+              label="Choose a preset"
+              data={Object.keys(presets)}
+              value={currentPresetName || undefined}
+              onChange={(value) => value && handlePresetChange(value)}
+              style={{ minWidth: 200 }}
+            />
+            <Group>
+              <Switch
+                checked={currentTheme === "dark"}
+                onChange={() =>
+                  setCurrentTheme((prev) =>
+                    prev === "light" ? "dark" : "light",
+                  )
+                }
+                label={currentTheme === "light" ? "Light" : "Dark"}
+                onLabel={<IconSun size={16} />}
+                offLabel={<IconMoon size={16} />}
+              />
+              <Switch
+                checked={applyToWebsite}
+                onChange={(event) =>
+                  setApplyToWebsite(event.currentTarget.checked)
+                }
+                label="Apply to website"
+              />
+            </Group>
+          </Group>
 
-        <Group>
-          <Switch
-            checked={currentTheme === "dark"}
-            onChange={() =>
-              setCurrentTheme((prev) => (prev === "light" ? "dark" : "light"))
-            }
-            label={`Current Theme: ${
-              currentTheme === "light" ? "Light" : "Dark"
-            }`}
-          />
-          <Switch
-            checked={applyToWebsite}
-            onChange={(event) => setApplyToWebsite(event.currentTarget.checked)}
-            label="Apply theme to website"
-          />
-          <Group justify="space-between">
-            <Button onClick={handleCompare}>Compare with Preset</Button>
-            <Button onClick={handleGeneratePalette}>
+          <Group grow>
+            <Button
+              leftSection={<IconArrowsLeftRight size={20} />}
+              onClick={handleCompare}
+            >
+              Compare with Preset
+            </Button>
+            <Button
+              leftSection={<IconPalette size={20} />}
+              onClick={handleGeneratePalette}
+            >
               Generate Color Palette
             </Button>
-
-            {/* <Button onClick={handleGenerateAccessibleTheme}>
-              Generate a theme
-            </Button> */}
           </Group>
-        </Group>
-        <Modal
-          opened={showComparison}
-          onClose={() => setShowComparison(false)}
-          size="xl"
-        >
-          <ThemeComparison
-            currentTheme={currentThemes[currentTheme]}
-            presets={presets}
-            onThemeModeChange={(isDark) =>
-              setCurrentTheme(isDark ? "dark" : "light")
-            }
-            currentThemeName="Current Theme"
+
+          <Group grow>
+            <Button leftSection={<IconShare size={20} />} onClick={shareTheme}>
+              Share Theme
+            </Button>
+            <Button
+              leftSection={<IconMoon size={20} />}
+              onClick={syncDarkTheme}
+            >
+              Sync Dark Theme
+            </Button>
+            <Button
+              leftSection={<IconArrowLeft size={20} />}
+              onClick={undo}
+              disabled={!canUndo}
+            >
+              Undo
+            </Button>
+            <Button
+              leftSection={<IconArrowRight size={20} />}
+              onClick={redo}
+              disabled={!canRedo}
+            >
+              Redo
+            </Button>
+          </Group>
+
+          {shareURL && (
+            <TextInput
+              label="Share URL"
+              value={shareURL}
+              readOnly
+              onClick={(event) => event.currentTarget.select()}
+              leftSection={<IconShare size={16} />}
+            />
+          )}
+
+          <ThemeControls
+            theme={currentThemes[currentTheme]}
+            updateTheme={updateTheme}
           />
-        </Modal>
-        <Group>
-          <Button onClick={shareTheme}>Share Theme</Button>
-          <Button onClick={syncDarkTheme}>Sync Dark Theme</Button>
-          <Button onClick={undo} disabled={!canUndo}>
-            Undo
-          </Button>
-          <Button onClick={redo} disabled={!canRedo}>
-            Redo
-          </Button>
-        </Group>
 
-        {shareURL && (
-          <TextInput
-            label="Share URL"
-            value={shareURL}
-            readOnly
-            onClick={(event) => event.currentTarget.select()}
+          <AccessibilityWarnings warnings={accessibilityWarnings} />
+
+          <DetailedThemePreview
+            theme={currentThemes[currentTheme]}
+            name="Current Theme"
           />
-        )}
 
-        <ThemeControls
-          theme={currentThemes[currentTheme]}
-          updateTheme={updateTheme}
+          <DownloadSection
+            setThemeName={setThemeName}
+            lightTheme={currentThemes.light}
+            darkTheme={currentThemes.dark}
+            setLightTheme={(theme) => addToHistory(theme, currentThemes.dark)}
+            setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
+          />
+        </Stack>
+      </Container>
+
+      <Modal
+        opened={showComparison}
+        onClose={() => setShowComparison(false)}
+        size="xl"
+      >
+        <ThemeComparison
+          currentTheme={currentThemes[currentTheme]}
+          presets={presets}
+          onThemeModeChange={(isDark) =>
+            setCurrentTheme(isDark ? "dark" : "light")
+          }
+          currentThemeName="Current Theme"
         />
-
-        <AccessibilityWarnings warnings={accessibilityWarnings} />
-
-        <DetailedThemePreview theme={currentThemes[currentTheme]} />
-
-        <DownloadSection
-          themeName={themeName}
-          setThemeName={setThemeName}
-          lightTheme={currentThemes.light}
-          darkTheme={currentThemes.dark}
-          setLightTheme={(theme) => addToHistory(theme, currentThemes.dark)}
-          setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
-        />
-      </Stack>
-    </Container>
+      </Modal>
+    </Box>
   );
 }
