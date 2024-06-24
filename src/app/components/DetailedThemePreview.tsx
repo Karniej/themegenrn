@@ -10,6 +10,8 @@ import {
   Group,
   Card,
   useMantineTheme,
+  List,
+  Avatar,
 } from "@mantine/core";
 import { Theme } from "../utils/presets";
 
@@ -33,6 +35,8 @@ export default function DetailedThemePreview({
         color: theme.colors.text,
         overflow: "hidden",
         boxShadow: mantineTheme.shadows.md,
+        maxWidth: 400,
+        margin: "0 auto",
       }}
     >
       <Stack p="md">
@@ -63,40 +67,26 @@ export default function DetailedThemePreview({
           </Group>
         </Paper>
 
-        {/* Content */}
-        <Stack p="md">
-          <Card
-            p="md"
-            radius="sm"
-            style={{
-              backgroundColor: theme.colors.card,
-              borderColor: theme.colors.border,
-            }}
+        {/* List of items */}
+        <List spacing="sm" size="sm" center>
+          <List.Item
+            icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
-            <Text>Card Content</Text>
-          </Card>
-          <Group>
-            <Button
-              style={{
-                backgroundColor: theme.colors.primary,
-                color: theme.colors.background,
-              }}
-            >
-              Primary Button
-            </Button>
-            <Button
-              variant="outline"
-              style={{
-                borderColor: theme.colors.primary,
-                color: theme.colors.primary,
-              }}
-            >
-              Secondary Button
-            </Button>
-          </Group>
-        </Stack>
+            <Text>Item 1</Text>
+          </List.Item>
+          <List.Item
+            icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
+          >
+            <Text>Item 2</Text>
+          </List.Item>
+          <List.Item
+            icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
+          >
+            <Text>Item 3</Text>
+          </List.Item>
+        </List>
 
-        {/* Tab Bar */}
+        {/* Footer */}
         <Paper
           p="md"
           radius="sm"
@@ -106,22 +96,17 @@ export default function DetailedThemePreview({
           }}
         >
           <Group justify="space-between">
-            <Text>Tab 1</Text>
-            <Text>Tab 2</Text>
-            <Text style={{ color: theme.colors.primary }}>Tab 3</Text>
+            <Text>Footer</Text>
+            <Button
+              size="sm"
+              style={{
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.background,
+              }}
+            >
+              Action
+            </Button>
           </Group>
-        </Paper>
-
-        {/* Notification */}
-        <Paper
-          p="sm"
-          radius="sm"
-          style={{
-            backgroundColor: theme.colors.notification,
-            color: theme.colors.background,
-          }}
-        >
-          <Text style={{ fontWeight: 500 }}>Notification Message</Text>
         </Paper>
       </Stack>
     </Paper>

@@ -72,6 +72,7 @@ export default function ThemeComparison({
             styles={{
               label: { color: "black" },
               option: { color: "black" },
+              wrapper: { color: "black" },
             }}
           />
           <Switch

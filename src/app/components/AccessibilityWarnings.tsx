@@ -14,7 +14,7 @@ export default function AccessibilityWarnings({
   if (warnings.length === 0) return null;
 
   return (
-    <Alert color="yellow" title="Accessibility Warnings">
+    <Alert bg="red" color="yellow" title="Accessibility Warnings">
       <ul>
         {warnings.map((warning, index) => (
           <li key={index}>{warning}</li>

@@ -44,6 +44,7 @@ import {
 } from "./utils/themeUtils";
 import { useThemeHistory } from "./hooks/useThemeHistory";
 import ThemeComparison from "./components/ThemeComparison";
+import LivePreview from "./components/LivePreview";
 
 extend([a11yPlugin, harmoniesPlugin]);
 
@@ -72,7 +73,7 @@ export default function Home() {
   } = useThemeHistory(presets.Default.light, presets.Default.dark);
 
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("light");
-  const [applyToWebsite, setApplyToWebsite] = useState(false);
+  const [applyToWebsite, setApplyToWebsite] = useState(true);
   const [accessibilityWarnings, setAccessibilityWarnings] = useState<string[]>(
     [],
   );
@@ -301,19 +302,6 @@ export default function Home() {
               leftSection={<IconShare size={16} />}
             />
           )}
-
-          <ThemeControls
-            theme={currentThemes[currentTheme]}
-            updateTheme={updateTheme}
-          />
-
-          <AccessibilityWarnings warnings={accessibilityWarnings} />
-
-          <DetailedThemePreview
-            theme={currentThemes[currentTheme]}
-            name="Current Theme"
-          />
-
           <DownloadSection
             setThemeName={setThemeName}
             lightTheme={currentThemes.light}
@@ -322,8 +310,22 @@ export default function Home() {
             setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
             themeName={themeName}
           />
+          <Group justify="space-around">
+            <ThemeControls
+              theme={currentThemes[currentTheme]}
+              updateTheme={updateTheme}
+            />
+
+            <DetailedThemePreview
+              theme={currentThemes[currentTheme]}
+              name="Current Theme"
+            />
+          </Group>
+          <AccessibilityWarnings warnings={accessibilityWarnings} />
         </Stack>
       </Container>
+
+      {/* <LivePreview theme={currentThemes[currentTheme]} /> */}
 
       <Modal
         opened={showComparison}

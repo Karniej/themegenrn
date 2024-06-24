@@ -1,51 +1,35 @@
 /** @format */
-"use_client";
 
-import React from "react";
-import { Paper, Button, Text, Stack } from "@mantine/core";
+import { useMemo } from "react";
+import { Box, Text } from "@mantine/core";
+import { Theme } from "../utils/presets";
+import { generateSnackUrl } from "../utils/generateSnackCode";
 
 interface LivePreviewProps {
-  theme: any;
+  theme: Theme;
 }
 
-export function LivePreview({ theme }: LivePreviewProps) {
+export default function LivePreview({ theme }: LivePreviewProps) {
+  const snackUrl = useMemo(() => generateSnackUrl(theme), [theme]);
+
   return (
-    <Paper
-      p={theme.space.md}
-      style={{
-        backgroundColor: theme.colors.background,
-        color: theme.colors.text,
-        borderRadius: theme.radius.md,
-        boxShadow: theme.shadows.md,
-      }}
-    >
-      <Stack>
-        <Text size="xl" weight={700}>
-          Live Preview
-        </Text>
-        <Button
+    <Box style={{ position: "relative", width: "65%", margin: "auto" }}>
+      <Text size="xl" fw={700} mb="md">
+        Live Preview
+      </Text>
+      <Box style={{ position: "relative" }}>
+        <iframe
+          src={snackUrl}
           style={{
-            backgroundColor: theme.colors.primary,
-            color: theme.colors.background,
-            borderRadius: theme.radius.sm,
-            padding: `${theme.space.sm}px ${theme.space.md}px`,
-            transition: `all ${theme.animations.fast}`,
+            width: "100%",
+            height: "500px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            overflow: "hidden",
           }}
-        >
-          Sample Button
-        </Button>
-        <Paper
-          p={theme.space.sm}
-          style={{
-            backgroundColor: theme.colors.primary,
-            color: theme.colors.background,
-            borderRadius: theme.radius.lg,
-            boxShadow: theme.shadows.sm,
-          }}
-        >
-          <Text>Sample Card</Text>
-        </Paper>
-      </Stack>
-    </Paper>
+          frameBorder="0"
+        />
+      </Box>
+    </Box>
   );
 }

@@ -22,7 +22,7 @@ export default function DownloadSection({
   setLightTheme,
   setDarkTheme,
 }: DownloadSectionProps) {
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
@@ -67,17 +67,17 @@ export default function DownloadSection({
 
   return (
     <Stack>
-      <TextInput
-        label="Theme Name"
-        value={themeName}
-        onChange={(e) => setThemeName(e.currentTarget.value)}
-      />
-      <TextInput
+      {/* <TextInput
         placeholder="Enter your email"
         value={email}
         onChange={(event) => setEmail(event.currentTarget.value)}
-      />
-      <Group>
+      /> */}
+      <Group align="flex-end">
+        <TextInput
+          label="Theme Name"
+          value={themeName}
+          onChange={(e) => setThemeName(e.currentTarget.value)}
+        />
         <Button onClick={handleExport}>Export Theme</Button>
         <Button onClick={() => fileInputRef.current?.click()}>
           Import Theme
