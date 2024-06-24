@@ -50,7 +50,7 @@ export default function Home() {
   const [accessibilityWarnings, setAccessibilityWarnings] = useState<string[]>(
     [],
   );
-  const [shareURL, setShareURL] = useState("");
+
   const isLightTheme = currentTheme === "light";
 
   const updateTheme = (key: keyof Theme["colors"], value: string) => {
