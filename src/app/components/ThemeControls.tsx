@@ -15,11 +15,13 @@ import { Theme } from "../utils/presets";
 interface ThemeControlsProps {
   theme: Theme;
   updateTheme: (key: keyof Theme["colors"], value: string) => void;
+  isApplyToWebsite: boolean;
 }
 
 export default function ThemeControls({
   theme,
   updateTheme,
+  isApplyToWebsite,
 }: ThemeControlsProps) {
   const mantineTheme = useMantineTheme();
 
@@ -28,19 +30,30 @@ export default function ThemeControls({
       p="xl"
       radius="md"
       style={{
-        backgroundColor: mantineTheme.colors.gray[0],
+        backgroundColor: isApplyToWebsite
+          ? theme.colors.background
+          : mantineTheme.colors.gray[0],
         boxShadow: mantineTheme.shadows.sm,
       }}
     >
       <Stack p="md">
-        <Title order={2} style={{ color: mantineTheme.colors.dark[6] }}>
+        <Title
+          order={2}
+          style={{
+            color: isApplyToWebsite
+              ? theme.colors.text
+              : mantineTheme.colors.dark[6],
+          }}
+        >
           Theme Colors
         </Title>
         {Object.entries(theme.colors).map(([key, value]) => (
           <Group key={key} justify="space-between" align="center">
             <Text
               style={{
-                color: mantineTheme.colors.dark[6],
+                color: isApplyToWebsite
+                  ? theme.colors.text
+                  : mantineTheme.colors.dark[6],
                 fontWeight: 500,
                 textTransform: "capitalize",
               }}

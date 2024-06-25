@@ -4,6 +4,7 @@
 import React, { useState, useRef } from "react";
 import { Stack, TextInput, Button, Group } from "@mantine/core";
 import { Theme } from "../utils/presets";
+import { IconCopy, IconShare } from "@tabler/icons-react";
 
 interface DownloadSectionProps {
   themeName: string;
@@ -12,6 +13,8 @@ interface DownloadSectionProps {
   darkTheme: Theme;
   setLightTheme: (theme: Theme) => void;
   setDarkTheme: (theme: Theme) => void;
+  shareTheme: () => void;
+  shareURL: string;
 }
 
 export default function DownloadSection({
@@ -21,6 +24,8 @@ export default function DownloadSection({
   darkTheme,
   setLightTheme,
   setDarkTheme,
+  shareTheme,
+  shareURL,
 }: DownloadSectionProps) {
   // const [email, setEmail] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,9 +83,18 @@ export default function DownloadSection({
           value={themeName}
           onChange={(e) => setThemeName(e.currentTarget.value)}
         />
-        <Button onClick={handleExport}>Export Theme</Button>
-        <Button onClick={() => fileInputRef.current?.click()}>
-          Import Theme
+        <Button variant="gradient" onClick={handleExport}>
+          Export
+        </Button>
+        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+          Import
+        </Button>
+        <Button
+          variant="gradient"
+          leftSection={<IconShare size={20} />}
+          onClick={shareTheme}
+        >
+          Share
         </Button>
         <input
           type="file"
@@ -90,6 +104,21 @@ export default function DownloadSection({
           accept=".json"
         />
       </Group>
+      {shareURL && (
+        <TextInput
+          label="Share URL"
+          value={shareURL}
+          readOnly
+          onClick={(event) => event.currentTarget.select()}
+          leftSection={<IconShare size={16} />}
+          rightSection={
+            <IconCopy
+              size={16}
+              onClick={() => navigator.clipboard.writeText(shareURL)}
+            />
+          }
+        />
+      )}
     </Stack>
   );
 }

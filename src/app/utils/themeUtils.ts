@@ -84,14 +84,14 @@ export function generatePalette(primaryColor: string): {
     dark: true,
     colors: {
       primary: base.lighten(0.1).saturate(0.1).toRgbString(),
-      background: base.darken(0.8).desaturate(0.2).toRgbString(),
-      card: base.darken(0.6).desaturate(0.1).toRgbString(),
+      background: base.darken(0.6).desaturate(0.2).toRgbString(),
+      card: base.darken(0.4).desaturate(0.1).toRgbString(),
       text: getContrastColor(
-        base.darken(0.8).desaturate(0.2).toRgbString(),
+        base.darken(0.6).desaturate(0.2).toRgbString(),
         "#FFFFFF",
         "#000000",
       ),
-      border: base.darken(0.4).desaturate(0.1).toRgbString(),
+      border: base.darken(0.3).desaturate(0.1).toRgbString(),
       notification: base.rotate(180).lighten(0.2).saturate(0.2).toRgbString(),
     },
   };

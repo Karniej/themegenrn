@@ -16,17 +16,24 @@ import {
   Box,
   Text,
   useMantineTheme,
+  ActionIcon,
+  Burger,
+  Menu,
+  Combobox,
+  SimpleGrid,
+  Image,
 } from "@mantine/core";
 import {
   IconPalette,
   IconShare,
   IconMoon,
   IconSun,
-  IconDownload,
   IconArrowLeft,
   IconArrowRight,
-  IconArrowsUpDown,
   IconArrowsLeftRight,
+  IconMail,
+  IconBrandGithubFilled,
+  IconBrandXFilled,
 } from "@tabler/icons-react";
 import { colord, extend } from "colord";
 import a11yPlugin from "colord/plugins/a11y";
@@ -44,7 +51,7 @@ import {
 } from "./utils/themeUtils";
 import { useThemeHistory } from "./hooks/useThemeHistory";
 import ThemeComparison from "./components/ThemeComparison";
-import LivePreview from "./components/LivePreview";
+import { useMediaQuery } from "@mantine/hooks";
 
 extend([a11yPlugin, harmoniesPlugin]);
 
@@ -71,7 +78,12 @@ export default function Home() {
     canUndo,
     canRedo,
   } = useThemeHistory(presets.Gruvbox.light, presets.Gruvbox.dark);
-
+  const [menuOpened, setMenuOpened] = useState(false);
+  const theme = useMantineTheme();
+  const [currPresetName, setCurrentPresetName] = useState<string | null>(
+    currentPresetName,
+  );
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("dark");
   const [applyToWebsite, setApplyToWebsite] = useState(true);
   const [accessibilityWarnings, setAccessibilityWarnings] = useState<string[]>(
@@ -120,6 +132,7 @@ export default function Home() {
     if (presets[presetName]) {
       const newLightTheme = { ...presets[presetName].light };
       const newDarkTheme = { ...presets[presetName].dark };
+      setCurrentPresetName(presetName);
       addToHistory(newLightTheme, newDarkTheme);
       checkAccessibility(
         currentTheme === "light" ? newLightTheme : newDarkTheme,
@@ -161,7 +174,6 @@ export default function Home() {
     }
   }, []);
 
-  const theme = useMantineTheme();
   // Apply the current theme to the container if applyToWebsite is true
   const containerStyle = applyToWebsite
     ? {
@@ -186,14 +198,14 @@ export default function Home() {
       style={{
         backgroundColor: theme.colors.gray[0],
         minHeight: "100vh",
-        padding: theme.spacing.xl,
-        ...containerStyle, // Apply the current theme if applyToWebsite is true
+        padding: theme.spacing.xs,
+        ...containerStyle,
       }}
     >
       <Container size="lg">
         <Stack p="xl">
-          <Paper
-            p="xl"
+          {/* <Paper
+            p="md"
             radius="md"
             style={{
               background: applyToWebsite
@@ -203,105 +215,150 @@ export default function Home() {
                 ? currentThemes[currentTheme].colors.text
                 : theme.white,
             }}
+          > */}
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            mt="xl  "
+            style={{
+              width: isMobile ? "60px" : "100px",
+              height: "auto",
+              margin: "0 auto",
+            }}
+          />
+          <Title
+            order={1}
+            ta="center"
+            style={{
+              fontSize: isMobile ? "1.5rem" : "2rem",
+            }}
           >
-            <Title
-              order={1}
-              ta="center"
-              style={{ fontSize: "2.5rem", marginBottom: theme.spacing.md }}
-            >
-              React Navigation Theme Generator
-            </Title>
-            <Text ta="center" size="lg">
-              Create and customize beautiful themes with ease
-            </Text>
-          </Paper>
+            React Navigation Theme Generator
+          </Title>
+          <Text ta="center" size={isMobile ? "sm" : "md"}>
+            Create and customize beautiful themes with ease
+          </Text>
+          {/* </Paper> */}
 
-          <Group justify="space-between" align="flex-end">
-            <Select
-              label="Choose a preset"
-              data={Object.keys(presets)}
-              value={currentPresetName || undefined}
-              onChange={(value) => value && handlePresetChange(value)}
-              style={{ minWidth: 200 }}
-              styles={{
-                option: {
-                  color: "black",
-                },
-              }}
+          {isMobile ? (
+            <Burger
+              opened={menuOpened}
+              onClick={() => setMenuOpened((o) => !o)}
+              size="sm"
+              color={theme.colors.gray[6]}
             />
-            <Group>
-              <Switch
-                checked={currentTheme === "dark"}
-                onChange={() =>
+          ) : (
+            <Group justify="space-between" align="flex-end" my="xl">
+              <Select
+                label="Choose a preset"
+                data={Object.keys(presets)}
+                value={currPresetName || undefined}
+                onChange={(value) => value && handlePresetChange(value)}
+                style={{ minWidth: 200 }}
+                styles={{
+                  option: {
+                    color: "black",
+                  },
+                }}
+              />
+              <Group>
+                <Switch
+                  checked={currentTheme === "dark"}
+                  onChange={() =>
+                    setCurrentTheme((prev) =>
+                      prev === "light" ? "dark" : "light",
+                    )
+                  }
+                  label={currentTheme === "light" ? "Light" : "Dark"}
+                  onLabel={<IconSun size={16} />}
+                  offLabel={<IconMoon size={16} />}
+                />
+                <Switch
+                  checked={applyToWebsite}
+                  onChange={(event) =>
+                    setApplyToWebsite(event.currentTarget.checked)
+                  }
+                  label="Apply to website"
+                />
+              </Group>
+            </Group>
+          )}
+
+          <Menu opened={menuOpened} onClose={() => setMenuOpened(false)}>
+            <Menu.Dropdown>
+              <Menu.Label>Presets</Menu.Label>
+              {Object.keys(presets).map((preset) => (
+                <Menu.Item
+                  key={preset}
+                  onClick={() => handlePresetChange(preset)}
+                >
+                  {preset}
+                </Menu.Item>
+              ))}
+              <Menu.Divider />
+              <Menu.Label>Theme</Menu.Label>
+              <Menu.Item
+                leftSection={
+                  currentTheme === "light" ? (
+                    <IconSun size={14} />
+                  ) : (
+                    <IconMoon size={14} />
+                  )
+                }
+                onClick={() =>
                   setCurrentTheme((prev) =>
                     prev === "light" ? "dark" : "light",
                   )
                 }
-                label={currentTheme === "light" ? "Light" : "Dark"}
-                onLabel={<IconSun size={16} />}
-                offLabel={<IconMoon size={16} />}
-              />
-              <Switch
-                checked={applyToWebsite}
-                onChange={(event) =>
-                  setApplyToWebsite(event.currentTarget.checked)
-                }
-                label="Apply to website"
-              />
-            </Group>
-          </Group>
+              >
+                {currentTheme === "light"
+                  ? "Switch to Dark"
+                  : "Switch to Light"}
+              </Menu.Item>
+              <Menu.Item onClick={() => setApplyToWebsite((prev) => !prev)}>
+                {applyToWebsite ? "Disable Website Theme" : "Apply to Website"}
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
 
-          <Group grow>
+          <SimpleGrid cols={isMobile ? 1 : 4} mb="lg">
             <Button
               leftSection={<IconArrowsLeftRight size={20} />}
               onClick={handleCompare}
+              variant="gradient"
             >
-              Compare with Preset
+              Compare
             </Button>
             <Button
+              variant="gradient"
               leftSection={<IconPalette size={20} />}
               onClick={handleGeneratePalette}
             >
-              Generate Color Palette
+              Generate
             </Button>
-          </Group>
+            <SimpleGrid cols={2} mb="lg">
+              <Button
+                leftSection={<IconArrowLeft size={20} />}
+                onClick={undo}
+                disabled={!canUndo}
+                variant="subtle"
+              >
+                Undo
+              </Button>
+              <Button
+                leftSection={<IconArrowRight size={20} />}
+                onClick={redo}
+                disabled={!canRedo}
+                variant="subtle"
+              >
+                Redo
+              </Button>
+            </SimpleGrid>
+          </SimpleGrid>
 
-          <Group grow>
-            <Button leftSection={<IconShare size={20} />} onClick={shareTheme}>
-              Share Theme
-            </Button>
-            <Button
-              leftSection={<IconMoon size={20} />}
-              onClick={syncDarkTheme}
-            >
-              Sync Dark Theme
-            </Button>
-            <Button
-              leftSection={<IconArrowLeft size={20} />}
-              onClick={undo}
-              disabled={!canUndo}
-            >
-              Undo
-            </Button>
-            <Button
-              leftSection={<IconArrowRight size={20} />}
-              onClick={redo}
-              disabled={!canRedo}
-            >
-              Redo
-            </Button>
-          </Group>
-
-          {shareURL && (
-            <TextInput
-              label="Share URL"
-              value={shareURL}
-              readOnly
-              onClick={(event) => event.currentTarget.select()}
-              leftSection={<IconShare size={16} />}
-            />
-          )}
           <DownloadSection
+            shareURL={shareURL}
+            shareTheme={shareTheme}
             setThemeName={setThemeName}
             lightTheme={currentThemes.light}
             darkTheme={currentThemes.dark}
@@ -309,22 +366,54 @@ export default function Home() {
             setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
             themeName={themeName}
           />
-          <Group justify="space-around">
+          <SimpleGrid cols={isMobile ? 1 : 2} spacing="md" mt="xl">
             <ThemeControls
+              isApplyToWebsite={applyToWebsite}
               theme={currentThemes[currentTheme]}
               updateTheme={updateTheme}
             />
-
-            <DetailedThemePreview
-              theme={currentThemes[currentTheme]}
-              name="Current Theme"
-            />
-          </Group>
+            <Box>
+              <DetailedThemePreview
+                theme={currentThemes[currentTheme]}
+                name="Current Theme"
+              />
+            </Box>
+          </SimpleGrid>
           <AccessibilityWarnings warnings={accessibilityWarnings} />
         </Stack>
       </Container>
 
-      {/* <LivePreview theme={currentThemes[currentTheme]} /> */}
+      <Group h={60} p="md" justify="center">
+        <ActionIcon
+          size="lg"
+          component="a"
+          variant="transparent"
+          color={currentThemes[currentTheme].colors.primary}
+          href="https://x.com/pawelkarniej"
+          target="_blank"
+        >
+          <IconBrandXFilled size={18} stroke={1.5} />
+        </ActionIcon>
+        <ActionIcon
+          variant="transparent"
+          size="lg"
+          component="a"
+          color={currentThemes[currentTheme].colors.primary}
+          href="mailto:karniej.p@gmail.com"
+        >
+          <IconMail size={18} stroke={1.5} />
+        </ActionIcon>
+        <ActionIcon
+          variant="transparent"
+          size="lg"
+          color={currentThemes[currentTheme].colors.primary}
+          component="a"
+          href="https://github.com/Karniej"
+          target="_blank"
+        >
+          <IconBrandGithubFilled size={18} stroke={1.5} />
+        </ActionIcon>
+      </Group>
 
       <Modal
         opened={showComparison}

@@ -12,8 +12,20 @@ import {
   useMantineTheme,
   List,
   Avatar,
+  SimpleGrid,
+  ActionIcon,
 } from "@mantine/core";
 import { Theme } from "../utils/presets";
+import {
+  IconBrandGithubFilled,
+  IconBrandXFilled,
+  IconHome,
+  IconMail,
+  IconPalette,
+  IconSearch,
+  IconSettings,
+  IconUser,
+} from "@tabler/icons-react";
 
 interface DetailedThemePreviewProps {
   theme: Theme;
@@ -28,7 +40,6 @@ export default function DetailedThemePreview({
 
   return (
     <Paper
-      p="xl"
       radius="md"
       style={{
         backgroundColor: theme.colors.background,
@@ -70,16 +81,19 @@ export default function DetailedThemePreview({
         {/* List of items */}
         <List spacing="sm" size="sm" center>
           <List.Item
+            py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
             <Text>Item 1</Text>
           </List.Item>
           <List.Item
+            py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
             <Text>Item 2</Text>
           </List.Item>
           <List.Item
+            py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
             <Text>Item 3</Text>
@@ -95,18 +109,20 @@ export default function DetailedThemePreview({
             borderTop: `1px solid ${theme.colors.border}`,
           }}
         >
-          <Group justify="space-between">
-            <Text>Footer</Text>
-            <Button
-              size="sm"
-              style={{
-                backgroundColor: theme.colors.primary,
-                color: theme.colors.background,
-              }}
-            >
-              Action
-            </Button>
-          </Group>
+          <SimpleGrid cols={4} spacing="md">
+            <ActionIcon size="lg" variant="transparent">
+              <IconHome color={theme.colors.primary} size={30} stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon size="lg" variant="transparent">
+              <IconSearch color={theme.colors.text} size={30} stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon size="lg" variant="transparent">
+              <IconUser color={theme.colors.text} size={30} stroke={1.5} />
+            </ActionIcon>
+            <ActionIcon size="lg" variant="transparent">
+              <IconSettings color={theme.colors.text} size={30} stroke={1.5} />
+            </ActionIcon>
+          </SimpleGrid>
         </Paper>
       </Stack>
     </Paper>

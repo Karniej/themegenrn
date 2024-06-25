@@ -10,7 +10,10 @@ import {
   Select,
   Switch,
   useMantineTheme,
+  SimpleGrid,
+  Box,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import DetailedThemePreview from "./DetailedThemePreview";
 import { Theme } from "../utils/presets";
 
@@ -30,6 +33,7 @@ export default function ThemeComparison({
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(currentTheme.dark);
   const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const handleThemeModeChange = (checked: boolean) => {
     setIsDarkMode(checked);
@@ -56,19 +60,29 @@ export default function ThemeComparison({
     : [];
 
   return (
-    <Paper p="xl" radius="md" style={{ backgroundColor: theme.colors.gray[0] }}>
-      <Stack p="md">
-        <Title order={2} style={{ color: theme.colors.dark[6] }}>
+    <Paper
+      p={isMobile ? "xs" : "xl"}
+      radius="md"
+      style={{ backgroundColor: theme.colors.gray[0] }}
+    >
+      <Stack spacing={isMobile ? "xs" : "md"}>
+        <Title
+          order={2}
+          style={{
+            color: theme.colors.dark[6],
+            fontSize: isMobile ? "1.5rem" : "2rem",
+          }}
+        >
           Theme Comparison
         </Title>
 
-        <Group align="flex-end">
+        <Stack spacing={isMobile ? "xs" : "md"}>
           <Select
             label="Select preset for comparison"
             data={Object.keys(presets)}
             value={selectedPreset}
             onChange={setSelectedPreset}
-            style={{ flex: 1 }}
+            style={{ width: "100%" }}
             styles={{
               label: { color: "black" },
               option: { color: "black" },
@@ -85,31 +99,43 @@ export default function ThemeComparison({
               label: { color: theme.colors.dark[6] },
             }}
           />
-        </Group>
+        </Stack>
 
         {selectedPreset && (
-          <Group grow>
-            <Stack>
-              <Title order={3} style={{ color: theme.colors.dark[6] }}>
+          <SimpleGrid cols={isMobile ? 1 : 2} spacing={isMobile ? "xs" : "md"}>
+            <Box>
+              <Title
+                order={3}
+                style={{
+                  color: theme.colors.dark[6],
+                  fontSize: isMobile ? "1.2rem" : "1.5rem",
+                }}
+              >
                 {selectedPreset} Preset
               </Title>
               <DetailedThemePreview
                 theme={presetTheme!}
                 name={selectedPreset}
               />
-            </Stack>
-            <Stack>
-              <Title order={3} style={{ color: theme.colors.dark[6] }}>
+            </Box>
+            <Box>
+              <Title
+                order={3}
+                style={{
+                  color: theme.colors.dark[6],
+                  fontSize: isMobile ? "1.2rem" : "1.5rem",
+                }}
+              >
                 {currentThemeName}
               </Title>
               <DetailedThemePreview theme={currentTheme} name="Your Preset" />
-            </Stack>
-          </Group>
+            </Box>
+          </SimpleGrid>
         )}
 
         {selectedPreset && differences.length > 0 && (
           <Paper
-            p="md"
+            p={isMobile ? "xs" : "md"}
             radius="sm"
             style={{ backgroundColor: theme.colors.gray[1] }}
           >
@@ -118,12 +144,19 @@ export default function ThemeComparison({
               style={{
                 color: theme.colors.dark[6],
                 marginBottom: theme.spacing.sm,
+                fontSize: isMobile ? "1.2rem" : "1.5rem",
               }}
             >
               Differences
             </Title>
             {differences.map((diff, index) => (
-              <Text key={index} style={{ color: theme.colors.dark[6] }}>
+              <Text
+                key={index}
+                style={{
+                  color: theme.colors.dark[6],
+                  fontSize: isMobile ? "0.9rem" : "1rem",
+                }}
+              >
                 {diff}
               </Text>
             ))}
@@ -132,11 +165,16 @@ export default function ThemeComparison({
 
         {selectedPreset && differences.length === 0 && (
           <Paper
-            p="md"
+            p={isMobile ? "xs" : "md"}
             radius="sm"
             style={{ backgroundColor: theme.colors.gray[1] }}
           >
-            <Text style={{ color: theme.colors.dark[6] }}>
+            <Text
+              style={{
+                color: theme.colors.dark[6],
+                fontSize: isMobile ? "0.9rem" : "1rem",
+              }}
+            >
               No differences found.
             </Text>
           </Paper>
