@@ -321,7 +321,7 @@ export default function Home() {
             </Menu.Dropdown>
           </Menu>
 
-          <SimpleGrid cols={isMobile ? 1 : 4} mb="lg">
+          <SimpleGrid cols={isMobile ? 1 : 4} mb={isMobile ? "xs" : "lg"}>
             <Button
               leftSection={<IconArrowsLeftRight size={20} />}
               onClick={handleCompare}
@@ -336,24 +336,22 @@ export default function Home() {
             >
               Generate
             </Button>
-            <SimpleGrid cols={2} mb="lg">
-              <Button
-                leftSection={<IconArrowLeft size={20} />}
-                onClick={undo}
-                disabled={!canUndo}
-                variant="subtle"
-              >
-                Undo
-              </Button>
-              <Button
-                leftSection={<IconArrowRight size={20} />}
-                onClick={redo}
-                disabled={!canRedo}
-                variant="subtle"
-              >
-                Redo
-              </Button>
-            </SimpleGrid>
+            <Button
+              leftSection={<IconArrowLeft size={20} />}
+              onClick={undo}
+              disabled={!canUndo}
+              variant="subtle"
+            >
+              Undo
+            </Button>
+            <Button
+              leftSection={<IconArrowRight size={20} />}
+              onClick={redo}
+              disabled={!canRedo}
+              variant="subtle"
+            >
+              Redo
+            </Button>
           </SimpleGrid>
 
           <DownloadSection

@@ -4,7 +4,12 @@
 import React, { useState, useRef } from "react";
 import { Stack, TextInput, Button, Group } from "@mantine/core";
 import { Theme } from "../utils/presets";
-import { IconCopy, IconShare } from "@tabler/icons-react";
+import {
+  IconCopy,
+  IconDownload,
+  IconShare,
+  IconUpload,
+} from "@tabler/icons-react";
 
 interface DownloadSectionProps {
   themeName: string;
@@ -83,10 +88,18 @@ export default function DownloadSection({
           value={themeName}
           onChange={(e) => setThemeName(e.currentTarget.value)}
         />
-        <Button variant="gradient" onClick={handleExport}>
+        <Button
+          leftSection={<IconDownload size={20} />}
+          variant="gradient"
+          onClick={handleExport}
+        >
           Export
         </Button>
-        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+        <Button
+          leftSection={<IconUpload size={20} />}
+          variant="outline"
+          onClick={() => fileInputRef.current?.click()}
+        >
           Import
         </Button>
         <Button
