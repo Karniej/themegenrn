@@ -65,7 +65,7 @@ export default function ThemeComparison({
       radius="md"
       style={{ backgroundColor: theme.colors.gray[0] }}
     >
-      <Stack spacing={isMobile ? "xs" : "md"}>
+      <Stack p={isMobile ? "xs" : "md"}>
         <Title
           order={2}
           style={{
@@ -76,7 +76,7 @@ export default function ThemeComparison({
           Theme Comparison
         </Title>
 
-        <Stack spacing={isMobile ? "xs" : "md"}>
+        <Stack p={isMobile ? "xs" : "md"}>
           <Select
             label="Select preset for comparison"
             data={Object.keys(presets)}

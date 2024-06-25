@@ -79,7 +79,7 @@ export default function DetailedThemePreview({
         </Paper>
 
         {/* List of items */}
-        <List spacing="sm" size="sm" center>
+        <List p="sm" size="sm" center>
           <List.Item
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
@@ -109,7 +109,7 @@ export default function DetailedThemePreview({
             borderTop: `1px solid ${theme.colors.border}`,
           }}
         >
-          <SimpleGrid cols={4} spacing="md">
+          <SimpleGrid cols={4} p="md">
             <ActionIcon size="lg" variant="transparent">
               <IconHome color={theme.colors.primary} size={30} stroke={1.5} />
             </ActionIcon>

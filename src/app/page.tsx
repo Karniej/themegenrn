@@ -172,7 +172,7 @@ export default function Home() {
     if (sharedTheme) {
       addToHistory(sharedTheme.light, sharedTheme.dark);
     }
-  }, []);
+  }, [addToHistory]);
 
   // Apply the current theme to the container if applyToWebsite is true
   const containerStyle = applyToWebsite
