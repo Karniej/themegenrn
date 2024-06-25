@@ -27,6 +27,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <ColorSchemeScript />
+        <head>
+          <link rel="icon" href="/logo.png" type="image/png" />
+        </head>
       </head>
       <body className={poppins.className}>
         <MantineProvider>{children}</MantineProvider>
