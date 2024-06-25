@@ -1,5 +1,4 @@
 /** @format */
-"use_client";
 
 import React from "react";
 import {
@@ -8,20 +7,16 @@ import {
   Button,
   Stack,
   Group,
-  Card,
-  useMantineTheme,
   List,
   Avatar,
   SimpleGrid,
   ActionIcon,
+  Badge,
+  useMantineTheme,
 } from "@mantine/core";
-import { Theme } from "../utils/presets";
+import { Theme, ViewStyle } from "../types/theme";
 import {
-  IconBrandGithubFilled,
-  IconBrandXFilled,
   IconHome,
-  IconMail,
-  IconPalette,
   IconSearch,
   IconSettings,
   IconUser,
@@ -36,29 +31,29 @@ export default function DetailedThemePreview({
   theme,
   name,
 }: DetailedThemePreviewProps) {
-  const mantineTheme = useMantineTheme();
+  function viewStyleToBoxShadow(viewStyle: ViewStyle): string {
+    const { shadowOffset, shadowOpacity, shadowRadius, elevation } = viewStyle;
+    return `${shadowOffset.width}px ${shadowOffset.height}px ${shadowRadius}px rgba(0, 0, 0, ${shadowOpacity}), 0px ${elevation}px ${elevation}px rgba(0, 0, 0, ${shadowOpacity})`;
+  }
 
   return (
     <Paper
-      radius="md"
+      p="0"
+      radius={theme.roundness.md}
       style={{
         backgroundColor: theme.colors.background,
         color: theme.colors.text,
-        overflow: "hidden",
-        boxShadow: mantineTheme.shadows.md,
-        maxWidth: 400,
+        // overflow: "hidden",
+        ...theme.shadows.md,
+        // width: 350, // Set a fixed width
         margin: "0 auto",
+        boxShadow: viewStyleToBoxShadow(theme.shadows.sm),
       }}
     >
       <Stack p="md">
-        <Text size="xl" style={{ fontWeight: 700 }} mb="md">
-          {name}
-        </Text>
-
-        {/* Header */}
         <Paper
           p="md"
-          radius="sm"
+          radius={theme.roundness.sm}
           style={{
             backgroundColor: theme.colors.card,
             borderBottom: `1px solid ${theme.colors.border}`,
@@ -71,6 +66,7 @@ export default function DetailedThemePreview({
               style={{
                 backgroundColor: theme.colors.primary,
                 color: theme.colors.background,
+                borderRadius: theme.roundness.xs,
               }}
             >
               Action
@@ -78,32 +74,60 @@ export default function DetailedThemePreview({
           </Group>
         </Paper>
 
+        {/* Success and Error examples */}
+        <Group justify="center" grow>
+          <Badge
+            p="sm"
+            radius={theme.roundness.sm}
+            style={{
+              backgroundColor: theme.colors.success,
+              ...theme.shadows.sm,
+            }}
+          >
+            <Text fs="sm" style={{ color: theme.colors.background }}>
+              Success
+            </Text>
+          </Badge>
+          <Badge
+            p="sm"
+            radius={theme.roundness.sm}
+            style={{
+              backgroundColor: theme.colors.error,
+              ...theme.shadows.sm,
+            }}
+          >
+            <Text fs="sm" style={{ color: theme.colors.background }}>
+              Error
+            </Text>
+          </Badge>
+        </Group>
+
         {/* List of items */}
-        <List p="sm" size="sm" center>
+        <List p="sm" fs="sm" center>
           <List.Item
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
-            <Text>Item 1</Text>
+            <Text fs="sm">Item 1</Text>
           </List.Item>
           <List.Item
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
-            <Text>Item 2</Text>
+            <Text fs="sm">Item 2</Text>
           </List.Item>
           <List.Item
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
-            <Text>Item 3</Text>
+            <Text fs="sm">Item 3</Text>
           </List.Item>
         </List>
 
         {/* Footer */}
         <Paper
           p="md"
-          radius="sm"
+          radius={theme.roundness.sm}
           style={{
             backgroundColor: theme.colors.card,
             borderTop: `1px solid ${theme.colors.border}`,

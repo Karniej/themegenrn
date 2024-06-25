@@ -8,7 +8,7 @@ import {
   Button,
   ColorPicker as MantineColorPicker,
 } from "@mantine/core";
-import { Theme } from "../utils/presets";
+import { Theme } from "../types/theme";
 import { generateHarmonies } from "../utils/colorUtils";
 
 interface ColorPickerProps {

@@ -2,7 +2,7 @@
 "use_client";
 
 import { useState } from "react";
-import { Theme } from "../utils/presets";
+import { Theme } from "../types/theme";
 
 interface HistoryEntry {
   presetName: string;

@@ -2,8 +2,8 @@
 "use_client";
 
 import React, { useState, useRef } from "react";
-import { Stack, TextInput, Button, Group } from "@mantine/core";
-import { Theme } from "../utils/presets";
+import { Stack, TextInput, Button, Group, Tooltip } from "@mantine/core";
+import { Theme } from "../types/theme";
 import {
   IconCopy,
   IconDownload,
@@ -34,7 +34,7 @@ export default function DownloadSection({
 }: DownloadSectionProps) {
   // const [email, setEmail] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const [copyIndicator, setCopyIndicator] = useState(false);
   const handleExport = () => {
     const themes = {
       [themeName]: {
@@ -73,6 +73,13 @@ export default function DownloadSection({
       };
       reader.readAsText(file);
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(shareURL).then(() => {
+      setCopyIndicator(true);
+      setTimeout(() => setCopyIndicator(false), 2000); // Hide after 2 seconds
+    });
   };
 
   return (
@@ -125,10 +132,14 @@ export default function DownloadSection({
           onClick={(event) => event.currentTarget.select()}
           leftSection={<IconShare size={16} />}
           rightSection={
-            <IconCopy
-              size={16}
-              onClick={() => navigator.clipboard.writeText(shareURL)}
-            />
+            <Tooltip
+              label="Copied!"
+              opened={copyIndicator}
+              position="top"
+              withArrow
+            >
+              <IconCopy size={16} onClick={handleCopy} />
+            </Tooltip>
           }
         />
       )}

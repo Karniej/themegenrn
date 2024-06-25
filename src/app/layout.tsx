@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import { Poppins } from "next/font/google";
+import App from "./app";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,7 +33,9 @@ export default function RootLayout({
         </head>
       </head>
       <body className={poppins.className}>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <App />
+        </MantineProvider>
       </body>
     </html>
   );

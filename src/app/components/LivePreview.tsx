@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { Box, Text } from "@mantine/core";
-import { Theme } from "../utils/presets";
+import { Theme } from "../types/theme";
 import { generateSnackUrl } from "../utils/generateSnackCode";
 
 interface LivePreviewProps {

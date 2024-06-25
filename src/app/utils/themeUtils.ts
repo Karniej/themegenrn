@@ -1,7 +1,7 @@
 /** @format */
 
-import { Theme } from "./presets";
 import { colord } from "colord";
+import { Theme } from "../types/theme";
 
 export function encodeThemeToURL(theme: { light: Theme; dark: Theme }) {
   const encodedTheme = encodeURIComponent(JSON.stringify(theme));
@@ -22,6 +22,7 @@ export function decodeThemeFromURL(): { light: Theme; dark: Theme } | null {
 }
 
 export function generateDarkTheme(lightTheme: Theme): Theme {
+  //@ts-ignore
   const darkTheme: Theme = {
     dark: true,
     colors: {} as Theme["colors"],
@@ -48,53 +49,121 @@ export function generateDarkTheme(lightTheme: Theme): Theme {
   return darkTheme;
 }
 
-function getContrastColor(
-  color: string,
-  darkColor: string,
-  lightColor: string,
-): string {
-  return colord(color).contrast(colord(darkColor)) >= 4.5
-    ? darkColor
-    : lightColor;
+function getContrastColor(color: string, light: string, dark: string): string {
+  return colord(color).contrast(colord(light)) >
+    colord(color).contrast(colord(dark))
+    ? light
+    : dark;
 }
 
-export function generatePalette(primaryColor: string): {
-  light: Theme;
-  dark: Theme;
-} {
-  const base = colord(primaryColor);
+function generateAccessibleColor(targetColor: string, bgColor: string): string {
+  let color = colord(targetColor);
+  let attempts = 0;
+  const maxAttempts = 20; // Prevent infinite loop
 
-  const lightTheme: Theme = {
-    dark: false,
-    colors: {
-      primary: base.toRgbString(),
-      background: base.lighten(0.4).desaturate(0.2).toRgbString(),
-      card: "#FFFFFF",
-      text: getContrastColor(
-        base.lighten(0.4).desaturate(0.2).toRgbString(),
-        "#000000",
-        "#FFFFFF",
-      ),
-      border: base.lighten(0.2).desaturate(0.1).toRgbString(),
-      notification: base.rotate(180).saturate(0.2).toRgbString(),
-    },
-  };
+  while (color.contrast(bgColor) < 4.5 && attempts < maxAttempts) {
+    color = color.darken(0.05);
+    attempts++;
+  }
 
-  const darkTheme: Theme = {
-    dark: true,
-    colors: {
-      primary: base.lighten(0.1).saturate(0.1).toRgbString(),
-      background: base.darken(0.6).desaturate(0.2).toRgbString(),
-      card: base.darken(0.4).desaturate(0.1).toRgbString(),
-      text: getContrastColor(
-        base.darken(0.6).desaturate(0.2).toRgbString(),
-        "#FFFFFF",
-        "#000000",
-      ),
-      border: base.darken(0.3).desaturate(0.1).toRgbString(),
-      notification: base.rotate(180).lighten(0.2).saturate(0.2).toRgbString(),
-    },
-  };
+  return color.toRgbString();
+}
 
-  return { light: lightTheme, dark: darkTheme };
+export function generatePalette(baseColor: string) {
+  try {
+    const base = colord(baseColor);
+    const lightBackground = base.lighten(0.4).desaturate(0.2).toRgbString();
+    const darkBackground = base.darken(0.4).desaturate(0.2).toRgbString();
+
+    const lightTheme: Theme = {
+      dark: false,
+      colors: {
+        primary: base.toRgbString(),
+        background: lightBackground,
+        card: base.lighten(0.5).desaturate(0.1).toRgbString(),
+        text: getContrastColor(lightBackground, "#000000", "#FFFFFF"),
+        border: base.lighten(0.2).desaturate(0.1).toRgbString(),
+        notification: base.rotate(180).saturate(0.2).toRgbString(),
+        secondary: base.rotate(120).saturate(0.1).toRgbString(),
+        accent: base.rotate(240).saturate(0.2).toRgbString(),
+        success: generateAccessibleColor("#00C853", lightBackground),
+        error: generateAccessibleColor("#D50000", lightBackground),
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
+      roundness: {
+        xs: 2,
+        sm: 4,
+        md: 8,
+        lg: 12,
+        xl: 16,
+        xxl: 24,
+      },
+      shadows: {
+        shadowColor: "#000",
+        xs: {
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.18,
+          shadowRadius: 1.0,
+          elevation: 1,
+        },
+        sm: {
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.23,
+          shadowRadius: 2.62,
+          elevation: 4,
+        },
+        md: {
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 4.65,
+          elevation: 8,
+        },
+        lg: {
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.37,
+          shadowRadius: 7.49,
+          elevation: 12,
+        },
+        xl: {
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.44,
+          shadowRadius: 10.32,
+          elevation: 16,
+        },
+        xxl: {
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.51,
+          shadowRadius: 13.16,
+          elevation: 20,
+        },
+      },
+    };
+
+    const darkTheme: Theme = {
+      ...lightTheme,
+      dark: true,
+      colors: {
+        ...lightTheme.colors,
+        primary: base.lighten(0.1).saturate(0.1).toRgbString(),
+        background: darkBackground,
+        card: base.darken(0.3).desaturate(0.1).toRgbString(),
+        text: getContrastColor(darkBackground, "#FFFFFF", "#000000"),
+        border: base.darken(0.2).desaturate(0.1).toRgbString(),
+        success: generateAccessibleColor("#00E676", darkBackground),
+        error: generateAccessibleColor("#FF1744", darkBackground),
+      },
+    };
+
+    return { light: lightTheme, dark: darkTheme };
+  } catch (error) {
+    console.error("Error generating palette:", error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
 }

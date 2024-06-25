@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import DetailedThemePreview from "./DetailedThemePreview";
-import { Theme } from "../utils/presets";
+import { Theme } from "../types/theme";
 
 interface ThemeComparisonProps {
   currentTheme: Theme;
