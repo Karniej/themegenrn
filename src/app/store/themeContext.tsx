@@ -1,6 +1,12 @@
 /** @format */
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { HomeProps } from "../types/homepage";
 import { Theme } from "../types/theme";
 import { presets } from "../constants/presets";
@@ -53,12 +59,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const { colorScheme } = useMantineColorScheme({
     keepTransitions: true,
   });
-  const addToHistory = (light: Theme, dark: Theme) => {
-    const newHistory = history.slice(0, currentIndex + 1);
-    newHistory.push({ presetName: "Default", light, dark });
-    setHistory(newHistory);
-    setCurrentIndex(newHistory.length - 1);
-  };
+  const addToHistory = useCallback(
+    (light: Theme, dark: Theme) => {
+      const newHistory = history.slice(0, currentIndex + 1);
+      newHistory.push({ presetName: "Default", light, dark });
+      setHistory(newHistory);
+      setCurrentIndex(newHistory.length - 1);
+    },
+    [history, currentIndex],
+  );
 
   const undo = () => {
     if (canUndo) {
@@ -149,7 +158,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     if (sharedTheme) {
       addToHistory(sharedTheme.light, sharedTheme.dark);
     }
-  }, []);
+  }, [addToHistory]);
 
   useEffect(() => {
     if (applyToWebsite) {
@@ -162,7 +171,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       document.body.style.color =
         mantineTheme.colors.gray[colorScheme === "dark" ? 0 : 9];
     }
-  }, [applyToWebsite, currentTheme, currentThemes, colorScheme]);
+  }, [
+    addToHistory,
+    applyToWebsite,
+    currentTheme,
+    currentThemes,
+    colorScheme,
+    mantineTheme.colors.gray,
+  ]);
 
   const value: HomeProps = {
     themeName,
@@ -182,14 +198,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     setShowComparison,
     accessibilityWarnings,
     updateTheme,
-    containerStyle: applyToWebsite
-      ? {
-          backgroundColor: currentThemes[currentTheme].colors.background,
-          color: currentThemes[currentTheme].colors.text,
-        }
-      : {},
     theme: currentThemes[currentTheme],
-    currentTheme,
     setCurrentTheme,
     menuOpened,
     setMenuOpened,

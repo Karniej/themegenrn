@@ -16,22 +16,11 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import DetailedThemePreview from "./DetailedThemePreview";
-import { Theme } from "../types/mantineTheme";
+import { Theme } from "../types/theme";
 import { useThemeContext } from "../store/themeContext";
+import { presets } from "../constants/presets";
 
-interface ThemeComparisonProps {
-  currentTheme: Theme;
-  presets: Record<string, { light: Theme; dark: Theme }>;
-  currentThemeName: string;
-  onThemeModeChange: (isDark: boolean) => void;
-}
-
-export default function ThemeComparison({
-  currentTheme,
-  presets,
-  currentThemeName,
-  onThemeModeChange,
-}: ThemeComparisonProps) {
+export default function ThemeComparison() {
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   const { applyToWebsite, theme, setCurrentTheme } = useThemeContext();
   const { colorScheme, setColorScheme } = useMantineColorScheme();
@@ -42,10 +31,6 @@ export default function ThemeComparison({
     setCurrentTheme(colorScheme === "dark" ? "light" : "dark");
     setColorScheme(colorScheme === "dark" ? "light" : "dark");
   };
-  // const handleThemeModeChange = (checked: boolean) => {
-  //   setIsDarkMode(checked);
-  //   onThemeModeChange(checked);
-  // };
 
   const getDifferences = (t1: Theme, t2: Theme) => {
     const differences: string[] = [];
@@ -62,14 +47,13 @@ export default function ThemeComparison({
   const presetTheme = selectedPreset
     ? presets[selectedPreset][isDarkMode ? "dark" : "light"]
     : null;
-  const differences = presetTheme
-    ? getDifferences(presetTheme, currentTheme)
-    : [];
+  const differences = presetTheme ? getDifferences(presetTheme, theme) : [];
 
   return (
     <Paper
       p={isMobile ? "xs" : "xl"}
       radius="md"
+      //@ts-ignore
       style={{
         backgroundColor: applyToWebsite
           ? mantineTheme.colors.background
@@ -102,16 +86,14 @@ export default function ThemeComparison({
             label="Dark Mode"
             checked={isDarkMode}
             onChange={handleSwitch}
-            styles={{
-              label: { color: mantineTheme.colors.dark[6] },
-            }}
           />
         </Stack>
 
         {selectedPreset && (
-          <SimpleGrid cols={isMobile ? 1 : 2} spacing={isMobile ? "xs" : "md"}>
+          <SimpleGrid cols={isMobile ? 1 : 2}>
             <Box>
               <Title
+                my="lg"
                 order={3}
                 style={{
                   fontSize: isMobile ? "1.2rem" : "1.5rem",
@@ -126,19 +108,20 @@ export default function ThemeComparison({
             </Box>
             <Box>
               <Title
+                my="lg"
                 order={3}
                 style={{
                   fontSize: isMobile ? "1.2rem" : "1.5rem",
                 }}
               >
-                {currentThemeName}
+                Current Theme
               </Title>
-              <DetailedThemePreview theme={currentTheme} name="Your Preset" />
+              <DetailedThemePreview theme={theme} name="Current Theme" />
             </Box>
           </SimpleGrid>
         )}
 
-        {selectedPreset && differences.length > 0 && (
+        {/* {selectedPreset && differences.length > 0 && (
           <Paper p={isMobile ? "xs" : "md"} radius="sm">
             <Title
               order={3}
@@ -172,7 +155,7 @@ export default function ThemeComparison({
               No differences found.
             </Text>
           </Paper>
-        )}
+        )} */}
       </Stack>
     </Paper>
   );

@@ -10,30 +10,21 @@ import {
   IconShare,
   IconUpload,
 } from "@tabler/icons-react";
+import { useThemeContext } from "../store/themeContext";
 
-interface DownloadSectionProps {
-  themeName: string;
-  setThemeName: (name: string) => void;
-  lightTheme: Theme;
-  darkTheme: Theme;
-  setLightTheme: (theme: Theme) => void;
-  setDarkTheme: (theme: Theme) => void;
-  shareTheme: () => void;
-  shareURL: string;
-}
-
-export default function DownloadSection({
-  themeName,
-  setThemeName,
-  lightTheme,
-  darkTheme,
-  setLightTheme,
-  setDarkTheme,
-  shareTheme,
-  shareURL,
-}: DownloadSectionProps) {
-  // const [email, setEmail] = useState("");
+export default function DownloadSection({}) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const {
+    theme,
+    setThemeName,
+    themeName,
+    currentThemes,
+    shareURL,
+    shareTheme,
+    addToHistory,
+  } = useThemeContext();
+  const lightTheme = currentThemes.light;
+  const darkTheme = currentThemes.dark;
   const [copyIndicator, setCopyIndicator] = useState(false);
   const handleExport = () => {
     const themes = {
@@ -64,8 +55,8 @@ export default function DownloadSection({
           const importedThemes = JSON.parse(content);
           const themeName = Object.keys(importedThemes)[0];
           setThemeName(themeName);
-          setLightTheme(importedThemes[themeName].light);
-          setDarkTheme(importedThemes[themeName].dark);
+          addToHistory(importedThemes[themeName].light, currentThemes.dark);
+          addToHistory(importedThemes[themeName].dark, currentThemes.light);
         } catch (error) {
           console.error("Error parsing imported theme:", error);
           alert("Failed to import theme. Please check the file format.");
@@ -84,11 +75,6 @@ export default function DownloadSection({
 
   return (
     <Stack>
-      {/* <TextInput
-        placeholder="Enter your email"
-        value={email}
-        onChange={(event) => setEmail(event.currentTarget.value)}
-      /> */}
       <Group align="flex-end">
         <TextInput
           label="Theme Name"
@@ -112,7 +98,9 @@ export default function DownloadSection({
         <Button
           variant="gradient"
           leftSection={<IconShare size={20} />}
-          onClick={shareTheme}
+          onClick={(e) => {
+            shareTheme(theme);
+          }}
         >
           Share
         </Button>

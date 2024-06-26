@@ -4,7 +4,6 @@ import { PageConfig, NextPage } from "next";
 import { Theme } from "./theme";
 
 export interface HomeProps {
-  params: any;
   themeName: string;
   setThemeName: (themeName: string) => void;
   currentThemes: { light: Theme; dark: Theme };
@@ -14,7 +13,6 @@ export interface HomeProps {
   canUndo: boolean;
   canRedo: boolean;
   handleCompare: () => void;
-  currentTheme: Theme;
   handleGeneratePalette: () => void;
   shareTheme: (theme: Theme) => void;
   shareURL: string;
@@ -23,7 +21,6 @@ export interface HomeProps {
   setShowComparison: (show: boolean) => void;
   accessibilityWarnings: string[];
   updateTheme: (key: string, value: any) => void;
-  containerStyle: React.CSSProperties;
   theme: Theme;
   setCurrentTheme: (theme: "light" | "dark") => void;
   menuOpened: boolean;

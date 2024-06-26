@@ -23,7 +23,7 @@ import {
 import { useThemeContext } from "./store/themeContext";
 
 export function DocsPage() {
-  const { applyToWebsite, theme, containerStyle } = useThemeContext();
+  const { applyToWebsite, theme } = useThemeContext();
 
   const mantineTheme = useMantineTheme();
 
@@ -32,11 +32,11 @@ export function DocsPage() {
   return (
     <Container
       size="lg"
+      //@ts-ignore
       style={{
         backgroundColor: appliedTheme.colors.background,
         minHeight: "100vh",
         padding: mantineTheme.spacing.xs,
-        ...containerStyle,
       }}
     >
       <Title order={1} ta="center" my="xl">

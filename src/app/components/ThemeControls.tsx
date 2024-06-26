@@ -1,6 +1,5 @@
 /** @format */
 
-import React from "react";
 import {
   Stack,
   Text,
@@ -13,19 +12,10 @@ import {
   NumberInput,
   useMantineColorScheme,
 } from "@mantine/core";
-import { Theme } from "../types/theme";
+import { useThemeContext } from "../store/themeContext";
 
-interface ThemeControlsProps {
-  theme: Theme;
-  updateTheme: (key: string, value: any) => void;
-  isApplyToWebsite: boolean;
-}
-
-export default function ThemeControls({
-  theme,
-  updateTheme,
-  isApplyToWebsite,
-}: ThemeControlsProps) {
+export default function ThemeControls() {
+  const { theme, updateTheme, applyToWebsite } = useThemeContext();
   const mantineTheme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const shadows = Object.entries(theme.shadows).map(([key, value]) => ({
@@ -37,11 +27,12 @@ export default function ThemeControls({
     <Paper
       p="xl"
       radius="md"
+      //@ts-ignore
       style={{
-        backgroundColor: isApplyToWebsite
+        backgroundColor: applyToWebsite
           ? theme.colors.background
           : mantineTheme.colors[colorScheme],
-        color: isApplyToWebsite
+        color: applyToWebsite
           ? theme.colors.text
           : mantineTheme.colors[colorScheme],
         boxShadow: mantineTheme.shadows.sm,
@@ -59,29 +50,10 @@ export default function ThemeControls({
 
         <Tabs.Panel value="colors" pt="xs">
           <Stack p="md">
-            <Title
-              order={2}
-              style={{
-                color: isApplyToWebsite
-                  ? theme.colors.text
-                  : mantineTheme.colors[colorScheme],
-              }}
-            >
-              Theme Colors
-            </Title>
+            <Title order={2}>Theme Colors</Title>
             {Object.entries(theme.colors).map(([key, value]) => (
               <Group key={key} justify="space-between" align="center">
-                <Text
-                  style={{
-                    color: isApplyToWebsite
-                      ? theme.colors.text
-                      : mantineTheme.colors[colorScheme],
-                    fontWeight: 500,
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {key}
-                </Text>
+                <Text tt="capitalize">{key}</Text>
                 <ColorInput
                   value={value}
                   onChange={(color) => updateTheme(`colors.${key}`, color)}
@@ -114,28 +86,10 @@ export default function ThemeControls({
 
         <Tabs.Panel value="fontSizes" pt="xs">
           <Stack p="md">
-            <Title
-              order={2}
-              style={{
-                color: isApplyToWebsite
-                  ? theme.colors.text
-                  : mantineTheme.colors[colorScheme],
-              }}
-            >
-              Font Sizes
-            </Title>
+            <Title order={2}>Font Sizes</Title>
             {Object.entries(theme.fontSizes).map(([key, value]) => (
               <Group key={key} justify="space-between" align="center">
-                <Text
-                  style={{
-                    color: isApplyToWebsite
-                      ? theme.colors.text
-                      : mantineTheme.colors[colorScheme],
-                    fontWeight: 500,
-                  }}
-                >
-                  {key}
-                </Text>
+                <Text fw={500}>{key}</Text>
                 <NumberInput
                   value={value}
                   onChange={(val) => updateTheme(`fontSizes.${key}`, val)}
@@ -151,28 +105,10 @@ export default function ThemeControls({
 
         <Tabs.Panel value="roundness" pt="xs">
           <Stack p="md">
-            <Title
-              order={2}
-              style={{
-                color: isApplyToWebsite
-                  ? theme.colors.text
-                  : mantineTheme.colors[colorScheme],
-              }}
-            >
-              Roundness
-            </Title>
+            <Title order={2}>Roundness</Title>
             {Object.entries(theme.roundness).map(([key, value]) => (
               <Group key={key} justify="space-between" align="center">
-                <Text
-                  style={{
-                    color: isApplyToWebsite
-                      ? theme.colors.text
-                      : mantineTheme.colors[colorScheme],
-                    fontWeight: 500,
-                  }}
-                >
-                  {key}
-                </Text>
+                <Text fw={500}>{key}</Text>
                 <NumberInput
                   value={value}
                   onChange={(val) => updateTheme(`roundness.${key}`, val)}
@@ -188,16 +124,7 @@ export default function ThemeControls({
 
         <Tabs.Panel value="shadows" pt="xs">
           <Stack p="md">
-            <Title
-              order={2}
-              style={{
-                color: isApplyToWebsite
-                  ? theme.colors.text
-                  : mantineTheme.colors[colorScheme],
-              }}
-            >
-              Shadows
-            </Title>
+            <Title order={2}>Shadows</Title>
             {shadows.map(({ key, value }, index) => {
               if (index === 0) return null;
               //TODO: Fix in next version
@@ -250,17 +177,7 @@ export default function ThemeControls({
               return (
                 <Stack key={key}>
                   <Group justify="space-between" align="center">
-                    <Text
-                      style={{
-                        color: isApplyToWebsite
-                          ? theme.colors.text
-                          : mantineTheme.colors[colorScheme],
-                        fontWeight: 500,
-                      }}
-                    >
-                      {key}
-                    </Text>
-
+                    <Text>{key}</Text>
                     <NumberInput
                       //@ts-ignore
                       value={value.elevation}

@@ -54,7 +54,6 @@ export default function Home() {
     accessibilityWarnings,
     updateTheme,
     applyToWebsite,
-    containerStyle,
     shareURL,
     theme,
     setCurrentTheme,
@@ -82,7 +81,6 @@ export default function Home() {
         color: currentTheme.colors.text,
         minHeight: "100vh",
         padding: mantineTheme.spacing.xs,
-        ...containerStyle,
       }}
     >
       <Title order={1} ta="center" my="xl">
@@ -143,23 +141,9 @@ export default function Home() {
           </Button>
         </SimpleGrid>
 
-        <DownloadSection
-          shareURL={shareURL}
-          //@ts-ignore
-          shareTheme={shareTheme}
-          setThemeName={setThemeName}
-          lightTheme={currentThemes.light}
-          darkTheme={currentThemes.dark}
-          setLightTheme={(theme) => addToHistory(theme, currentThemes.dark)}
-          setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
-          themeName={themeName}
-        />
+        <DownloadSection />
         <SimpleGrid cols={isMobile ? 1 : 2} spacing="md" mt="xl">
-          <ThemeControls
-            isApplyToWebsite={applyToWebsite}
-            theme={theme}
-            updateTheme={updateTheme}
-          />
+          <ThemeControls />
           <Box>
             <DetailedThemePreview theme={theme} name="Current Theme" />
           </Box>
@@ -200,16 +184,9 @@ export default function Home() {
       <Modal
         opened={showComparison}
         onClose={() => setShowComparison(false)}
-        size="xl"
+        size={isMobile ? "md" : 1000}
       >
-        <ThemeComparison
-          currentTheme={theme}
-          presets={presets}
-          onThemeModeChange={(isDark) =>
-            setCurrentTheme(isDark ? "dark" : "light")
-          }
-          currentThemeName="Current Theme"
-        />
+        <ThemeComparison />
       </Modal>
     </Container>
   );

@@ -103,7 +103,7 @@ export default function DetailedThemePreview({
         </Group>
 
         {/* List of items */}
-        <List p="sm" fs="sm" center>
+        <List p="sm" fs="sm" center h={430}>
           <List.Item
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
