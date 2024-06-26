@@ -39,13 +39,11 @@ export default function DetailedThemePreview({
   return (
     <Paper
       p="0"
-      radius={theme.roundness.md}
+      radius={theme.roundness.md} // Use theme.roundness
       style={{
         backgroundColor: theme.colors.background,
         color: theme.colors.text,
-        // overflow: "hidden",
         ...theme.shadows.md,
-        // width: 350, // Set a fixed width
         margin: "0 auto",
         boxShadow: viewStyleToBoxShadow(theme.shadows.sm),
       }}
@@ -53,20 +51,22 @@ export default function DetailedThemePreview({
       <Stack p="md">
         <Paper
           p="md"
-          radius={theme.roundness.sm}
+          radius={theme.roundness.sm} // Use theme.roundness
           style={{
             backgroundColor: theme.colors.card,
             borderBottom: `1px solid ${theme.colors.border}`,
           }}
         >
           <Group justify="space-between">
-            <Text style={{ fontWeight: 500 }}>Header</Text>
+            <Text style={{ fontWeight: 500, fontSize: theme.fontSizes.md }}>
+              Header
+            </Text>
             <Button
               size="sm"
               style={{
                 backgroundColor: theme.colors.primary,
                 color: theme.colors.background,
-                borderRadius: theme.roundness.xs,
+                borderRadius: theme.roundness.xs, // Use theme.roundness
               }}
             >
               Action
@@ -78,7 +78,7 @@ export default function DetailedThemePreview({
         <Group justify="center" grow>
           <Badge
             p="sm"
-            radius={theme.roundness.sm}
+            radius={theme.roundness.sm} // Use theme.roundness
             style={{
               backgroundColor: theme.colors.success,
               ...theme.shadows.sm,
@@ -90,7 +90,7 @@ export default function DetailedThemePreview({
           </Badge>
           <Badge
             p="sm"
-            radius={theme.roundness.sm}
+            radius={theme.roundness.sm} // Use theme.roundness
             style={{
               backgroundColor: theme.colors.error,
               ...theme.shadows.sm,
@@ -108,26 +108,32 @@ export default function DetailedThemePreview({
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
-            <Text fs="sm">Item 1</Text>
+            <Text fs="sm" style={{ fontSize: theme.fontSizes.sm }}>
+              Item 1
+            </Text>
           </List.Item>
           <List.Item
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
-            <Text fs="sm">Item 2</Text>
+            <Text fs="sm" style={{ fontSize: theme.fontSizes.sm }}>
+              Item 2
+            </Text>
           </List.Item>
           <List.Item
             py="sm"
             icon={<Avatar src="https://via.placeholder.com/40" radius="xl" />}
           >
-            <Text fs="sm">Item 3</Text>
+            <Text fs="sm" style={{ fontSize: theme.fontSizes.sm }}>
+              Item 3
+            </Text>
           </List.Item>
         </List>
 
         {/* Footer */}
         <Paper
           p="md"
-          radius={theme.roundness.sm}
+          radius={theme.roundness.sm} // Use theme.roundness
           style={{
             backgroundColor: theme.colors.card,
             borderTop: `1px solid ${theme.colors.border}`,
