@@ -14,6 +14,7 @@ import {
   useMantineTheme,
   Burger,
   Title,
+  useMantineColorScheme,
 } from "@mantine/core";
 import {
   IconPalette,
@@ -32,76 +33,53 @@ import DownloadSection from "./components/DownloadSection";
 import DetailedThemePreview from "./components/DetailedThemePreview";
 import ThemeComparison from "./components/ThemeComparison";
 import { useMediaQuery } from "@mantine/hooks";
-import { Theme } from "./types/theme";
 import { presets } from "./constants/presets";
+import { useThemeContext } from "./store/themeContext";
 
-interface HomeProps {
-  themeName: string;
-  setThemeName: (themeName: string) => void;
-  currentThemes: { light: Theme; dark: Theme };
-  addToHistory: (lightTheme: Theme, darkTheme: Theme) => void;
-  undo: () => void;
-  redo: () => void;
-  canUndo: boolean;
-  canRedo: boolean;
-  handleCompare: () => void;
-  handleGeneratePalette: () => void;
-  shareTheme: (theme: Theme) => void;
-  shareURL: string;
-  applyToWebsite: boolean;
-  showComparison: boolean;
-  setShowComparison: (show: boolean) => void;
-  accessibilityWarnings: string[];
-  updateTheme: (key: string, value: any) => void;
-  containerStyle: React.CSSProperties;
-  syncDarkTheme: () => void;
-  theme: Theme;
-  setCurrentTheme: (theme: "light" | "dark") => void;
-  menuOpened: boolean;
-  setMenuOpened: (opened: boolean) => void;
-  currPresetName: string;
-  handlePresetChange: (value: string) => void;
-  setApplyToWebsite: (applyToWebsite: boolean) => void;
-}
+export default function Home() {
+  const {
+    themeName,
+    setThemeName,
+    currentThemes,
+    addToHistory,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    handleCompare,
+    handleGeneratePalette,
+    shareTheme,
+    showComparison,
+    setShowComparison,
+    accessibilityWarnings,
+    updateTheme,
+    applyToWebsite,
+    containerStyle,
+    shareURL,
+    theme,
+    setCurrentTheme,
+    menuOpened,
+    setMenuOpened,
+    currPresetName,
+    handlePresetChange,
+    setApplyToWebsite,
+  } = useThemeContext();
 
-export default function Home({
-  themeName,
-  setThemeName,
-  currentThemes,
-  addToHistory,
-  undo,
-  redo,
-  canUndo,
-  canRedo,
-  handleCompare,
-  handleGeneratePalette,
-  shareTheme,
-  syncDarkTheme,
-  showComparison,
-  setShowComparison,
-  accessibilityWarnings,
-  updateTheme,
-  applyToWebsite,
-  containerStyle,
-  shareURL,
-  theme,
-  setCurrentTheme,
-  menuOpened,
-  setMenuOpened,
-  currPresetName,
-  handlePresetChange,
-  setApplyToWebsite,
-}: HomeProps) {
   const mantineTheme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${mantineTheme.breakpoints.sm})`);
   const currentTheme = applyToWebsite ? theme : mantineTheme;
-
+  const { setColorScheme, colorScheme } = useMantineColorScheme();
+  const handleSwitch = () => {
+    setCurrentTheme(colorScheme === "dark" ? "light" : "dark");
+    setColorScheme(colorScheme === "dark" ? "light" : "dark");
+  };
   return (
     <Container
       size="lg"
       //@ts-ignore
       style={{
         backgroundColor: currentTheme.colors.background,
+        color: currentTheme.colors.text,
         minHeight: "100vh",
         padding: mantineTheme.spacing.xs,
         ...containerStyle,
@@ -110,111 +88,85 @@ export default function Home({
       <Title order={1} ta="center" my="xl">
         Theme Generator
       </Title>
-      <Container size="lg">
-        <Stack p="xl">
-          {isMobile ? (
-            <Burger
-              opened={menuOpened}
-              //@ts-ignore
-              onClick={() => setMenuOpened((o) => !o)}
-              size="sm"
-              color={theme.colors.primary}
-            />
-          ) : (
-            <Group justify="space-between" align="flex-end" my="xl">
-              <Select
-                label="Choose a preset"
-                data={Object.keys(presets)}
-                value={currPresetName || undefined}
-                onChange={(value) => value && handlePresetChange(value)}
-                style={{ minWidth: 200 }}
-                styles={{
-                  option: {
-                    color: "black",
-                  },
-                }}
-              />
-              <Group>
-                <Switch
-                  checked={theme.dark}
-                  onChange={() =>
-                    //@ts-ignore
-                    setCurrentTheme((prev: "light" | "dark") =>
-                      prev === "light" ? "dark" : "light",
-                    )
-                  }
-                  label={theme.dark ? "Dark" : "Light"}
-                  onLabel={<IconSun size={16} />}
-                  offLabel={<IconMoon size={16} />}
-                />
-                <Switch
-                  checked={applyToWebsite}
-                  onChange={(event) =>
-                    setApplyToWebsite(event.currentTarget.checked)
-                  }
-                  label="Apply to website"
-                />
-              </Group>
-            </Group>
-          )}
-          <SimpleGrid cols={isMobile ? 1 : 4} mb={isMobile ? "xs" : "lg"}>
-            <Button
-              leftSection={<IconArrowsLeftRight size={20} />}
-              onClick={handleCompare}
-              variant="gradient"
-            >
-              Compare
-            </Button>
-            <Button
-              variant="gradient"
-              leftSection={<IconPalette size={20} />}
-              onClick={handleGeneratePalette}
-            >
-              Generate
-            </Button>
-            <Button
-              leftSection={<IconArrowLeft size={20} />}
-              onClick={undo}
-              disabled={!canUndo}
-              variant="subtle"
-            >
-              Undo
-            </Button>
-            <Button
-              leftSection={<IconArrowRight size={20} />}
-              onClick={redo}
-              disabled={!canRedo}
-              variant="subtle"
-            >
-              Redo
-            </Button>
-          </SimpleGrid>
-
-          <DownloadSection
-            shareURL={shareURL}
-            //@ts-ignore
-            shareTheme={shareTheme}
-            setThemeName={setThemeName}
-            lightTheme={currentThemes.light}
-            darkTheme={currentThemes.dark}
-            setLightTheme={(theme) => addToHistory(theme, currentThemes.dark)}
-            setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
-            themeName={themeName}
+      <Group justify="center" mb="xl">
+        <Switch
+          checked={theme.dark}
+          onChange={handleSwitch}
+          label={theme.dark ? "Dark" : "Light"}
+          onLabel={<IconSun size={16} />}
+          offLabel={<IconMoon size={16} />}
+        />
+        <Switch
+          checked={applyToWebsite}
+          onChange={(event) => setApplyToWebsite(event.currentTarget.checked)}
+          label="Apply to website"
+        />
+      </Group>
+      <Stack>
+        <SimpleGrid cols={isMobile ? 1 : 5} mb={isMobile ? "xs" : "lg"}>
+          <Select
+            placeholder="Choose a preset"
+            data={Object.keys(presets)}
+            value={currPresetName || undefined}
+            onChange={(value) => value && handlePresetChange(value)}
+            style={{ minWidth: 200 }}
           />
-          <SimpleGrid cols={isMobile ? 1 : 2} spacing="md" mt="xl">
-            <ThemeControls
-              isApplyToWebsite={applyToWebsite}
-              theme={theme}
-              updateTheme={updateTheme}
-            />
-            <Box>
-              <DetailedThemePreview theme={theme} name="Current Theme" />
-            </Box>
-          </SimpleGrid>
-          <AccessibilityWarnings warnings={accessibilityWarnings} />
-        </Stack>
-      </Container>
-      <Group h={60} p="md" justify="center">
+          <Button
+            leftSection={<IconArrowsLeftRight size={20} />}
+            onClick={handleCompare}
+            variant="gradient"
+          >
+            Compare
+          </Button>
+          <Button
+            variant="gradient"
+            leftSection={<IconPalette size={20} />}
+            onClick={handleGeneratePalette}
+          >
+            Generate
+          </Button>
+          <Button
+            leftSection={<IconArrowLeft size={20} />}
+            onClick={undo}
+            disabled={!canUndo}
+            variant="subtle"
+          >
+            Undo
+          </Button>
+          <Button
+            leftSection={<IconArrowRight size={20} />}
+            onClick={redo}
+            disabled={!canRedo}
+            variant="subtle"
+          >
+            Redo
+          </Button>
+        </SimpleGrid>
+
+        <DownloadSection
+          shareURL={shareURL}
+          //@ts-ignore
+          shareTheme={shareTheme}
+          setThemeName={setThemeName}
+          lightTheme={currentThemes.light}
+          darkTheme={currentThemes.dark}
+          setLightTheme={(theme) => addToHistory(theme, currentThemes.dark)}
+          setDarkTheme={(theme) => addToHistory(currentThemes.light, theme)}
+          themeName={themeName}
+        />
+        <SimpleGrid cols={isMobile ? 1 : 2} spacing="md" mt="xl">
+          <ThemeControls
+            isApplyToWebsite={applyToWebsite}
+            theme={theme}
+            updateTheme={updateTheme}
+          />
+          <Box>
+            <DetailedThemePreview theme={theme} name="Current Theme" />
+          </Box>
+        </SimpleGrid>
+        <AccessibilityWarnings warnings={accessibilityWarnings} />
+      </Stack>
+      <Group p="md" justify="center">
         <ActionIcon
           size="lg"
           component="a"

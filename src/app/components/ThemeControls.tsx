@@ -11,6 +11,7 @@ import {
   Title,
   Tabs,
   NumberInput,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { Theme } from "../types/theme";
 
@@ -26,7 +27,7 @@ export default function ThemeControls({
   isApplyToWebsite,
 }: ThemeControlsProps) {
   const mantineTheme = useMantineTheme();
-
+  const { colorScheme } = useMantineColorScheme();
   const shadows = Object.entries(theme.shadows).map(([key, value]) => ({
     key,
     value: value,
@@ -39,13 +40,18 @@ export default function ThemeControls({
       style={{
         backgroundColor: isApplyToWebsite
           ? theme.colors.background
-          : mantineTheme.colors.gray[0],
+          : mantineTheme.colors[colorScheme],
+        color: isApplyToWebsite
+          ? theme.colors.text
+          : mantineTheme.colors[colorScheme],
         boxShadow: mantineTheme.shadows.sm,
       }}
     >
       <Tabs defaultValue="colors">
         <Tabs.List>
-          <Tabs.Tab value="colors">Colors</Tabs.Tab>
+          <Tabs.Tab color="" value="colors">
+            Colors
+          </Tabs.Tab>
           <Tabs.Tab value="fontSizes">Font Sizes</Tabs.Tab>
           <Tabs.Tab value="roundness">Roundness</Tabs.Tab>
           <Tabs.Tab value="shadows">Shadows</Tabs.Tab>
@@ -58,7 +64,7 @@ export default function ThemeControls({
               style={{
                 color: isApplyToWebsite
                   ? theme.colors.text
-                  : mantineTheme.colors.dark[6],
+                  : mantineTheme.colors[colorScheme],
               }}
             >
               Theme Colors
@@ -69,7 +75,7 @@ export default function ThemeControls({
                   style={{
                     color: isApplyToWebsite
                       ? theme.colors.text
-                      : mantineTheme.colors.dark[6],
+                      : mantineTheme.colors[colorScheme],
                     fontWeight: 500,
                     textTransform: "capitalize",
                   }}
@@ -113,7 +119,7 @@ export default function ThemeControls({
               style={{
                 color: isApplyToWebsite
                   ? theme.colors.text
-                  : mantineTheme.colors.dark[6],
+                  : mantineTheme.colors[colorScheme],
               }}
             >
               Font Sizes
@@ -124,7 +130,7 @@ export default function ThemeControls({
                   style={{
                     color: isApplyToWebsite
                       ? theme.colors.text
-                      : mantineTheme.colors.dark[6],
+                      : mantineTheme.colors[colorScheme],
                     fontWeight: 500,
                   }}
                 >
@@ -150,7 +156,7 @@ export default function ThemeControls({
               style={{
                 color: isApplyToWebsite
                   ? theme.colors.text
-                  : mantineTheme.colors.dark[6],
+                  : mantineTheme.colors[colorScheme],
               }}
             >
               Roundness
@@ -161,7 +167,7 @@ export default function ThemeControls({
                   style={{
                     color: isApplyToWebsite
                       ? theme.colors.text
-                      : mantineTheme.colors.dark[6],
+                      : mantineTheme.colors[colorScheme],
                     fontWeight: 500,
                   }}
                 >
@@ -187,7 +193,7 @@ export default function ThemeControls({
               style={{
                 color: isApplyToWebsite
                   ? theme.colors.text
-                  : mantineTheme.colors.dark[6],
+                  : mantineTheme.colors[colorScheme],
               }}
             >
               Shadows
@@ -202,7 +208,7 @@ export default function ThemeControls({
               //         style={{
               //           color: isApplyToWebsite
               //             ? theme.colors.text
-              //             : mantineTheme.colors.dark[6],
+              //             : mantineTheme.colors[colorScheme],
               //           fontWeight: 500,
               //           textTransform: "capitalize",
               //         }}
@@ -248,7 +254,7 @@ export default function ThemeControls({
                       style={{
                         color: isApplyToWebsite
                           ? theme.colors.text
-                          : mantineTheme.colors.dark[6],
+                          : mantineTheme.colors[colorScheme],
                         fontWeight: 500,
                       }}
                     >

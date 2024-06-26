@@ -4,7 +4,7 @@ import "@mantine/core/styles.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { MantineProvider, ColorSchemeScript } from "@mantine/core";
+import { ColorSchemeScript } from "@mantine/core";
 import { Poppins } from "next/font/google";
 import App from "./app";
 
@@ -33,9 +33,7 @@ export default function RootLayout({
         </head>
       </head>
       <body className={poppins.className}>
-        <MantineProvider>
-          <App />
-        </MantineProvider>
+        <App />
       </body>
     </html>
   );

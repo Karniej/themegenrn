@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Title,
@@ -12,7 +12,6 @@ import {
   List,
 } from "@mantine/core";
 
-import { useThemeHistory } from "./hooks/useThemeHistory";
 import { presets } from "./constants/presets";
 import { useLocation } from "react-router-dom";
 import CodeBlock from "./components/CodeBlock";
@@ -21,27 +20,23 @@ import {
   themeUsageExampleString,
   themedComponentsString,
 } from "./constants/codeSamples";
+import { useThemeContext } from "./store/themeContext";
 
 export function DocsPage() {
-  const { currentThemes } = useThemeHistory(
-    presets.Gruvbox.light,
-    presets.Gruvbox.dark,
-  );
+  const { applyToWebsite, theme, containerStyle } = useThemeContext();
 
   const mantineTheme = useMantineTheme();
-  const location = useLocation();
-  const { theme, isApplyToWebsite } = location.state || {};
 
-  const appliedTheme = isApplyToWebsite ? theme : mantineTheme;
+  const appliedTheme = applyToWebsite ? theme : mantineTheme;
 
   return (
     <Container
       size="lg"
       style={{
-        backgroundColor: isApplyToWebsite
-          ? appliedTheme.colors.background
-          : undefined,
-        color: isApplyToWebsite ? appliedTheme.colors.text : undefined,
+        backgroundColor: appliedTheme.colors.background,
+        minHeight: "100vh",
+        padding: mantineTheme.spacing.xs,
+        ...containerStyle,
       }}
     >
       <Title order={1} ta="center" my="xl">

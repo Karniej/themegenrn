@@ -12,10 +12,12 @@ import {
   useMantineTheme,
   SimpleGrid,
   Box,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import DetailedThemePreview from "./DetailedThemePreview";
-import { Theme } from "../types/theme";
+import { Theme } from "../types/mantineTheme";
+import { useThemeContext } from "../store/themeContext";
 
 interface ThemeComparisonProps {
   currentTheme: Theme;
@@ -31,14 +33,19 @@ export default function ThemeComparison({
   onThemeModeChange,
 }: ThemeComparisonProps) {
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(currentTheme.dark);
-  const theme = useMantineTheme();
-  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-
-  const handleThemeModeChange = (checked: boolean) => {
-    setIsDarkMode(checked);
-    onThemeModeChange(checked);
+  const { applyToWebsite, theme, setCurrentTheme } = useThemeContext();
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const mantineTheme = useMantineTheme();
+  const isDarkMode = theme.dark;
+  const isMobile = useMediaQuery(`(max-width: ${mantineTheme.breakpoints.sm})`);
+  const handleSwitch = () => {
+    setCurrentTheme(colorScheme === "dark" ? "light" : "dark");
+    setColorScheme(colorScheme === "dark" ? "light" : "dark");
   };
+  // const handleThemeModeChange = (checked: boolean) => {
+  //   setIsDarkMode(checked);
+  //   onThemeModeChange(checked);
+  // };
 
   const getDifferences = (t1: Theme, t2: Theme) => {
     const differences: string[] = [];
@@ -63,13 +70,20 @@ export default function ThemeComparison({
     <Paper
       p={isMobile ? "xs" : "xl"}
       radius="md"
-      style={{ backgroundColor: theme.colors.gray[0] }}
+      style={{
+        backgroundColor: applyToWebsite
+          ? mantineTheme.colors.background
+          : mantineTheme.colors[colorScheme],
+        color: applyToWebsite
+          ? mantineTheme.colors.text
+          : mantineTheme.colors[colorScheme],
+        boxShadow: mantineTheme.shadows.sm,
+      }}
     >
       <Stack p={isMobile ? "xs" : "md"}>
         <Title
           order={2}
           style={{
-            color: theme.colors.dark[6],
             fontSize: isMobile ? "1.5rem" : "2rem",
           }}
         >
@@ -78,25 +92,18 @@ export default function ThemeComparison({
 
         <Stack p={isMobile ? "xs" : "md"}>
           <Select
-            label="Select preset for comparison"
+            placeholder="Select preset for comparison"
             data={Object.keys(presets)}
             value={selectedPreset}
             onChange={setSelectedPreset}
             style={{ width: "100%" }}
-            styles={{
-              label: { color: "black" },
-              option: { color: "black" },
-              wrapper: { color: "black" },
-            }}
           />
           <Switch
             label="Dark Mode"
             checked={isDarkMode}
-            onChange={(event) =>
-              handleThemeModeChange(event.currentTarget.checked)
-            }
+            onChange={handleSwitch}
             styles={{
-              label: { color: theme.colors.dark[6] },
+              label: { color: mantineTheme.colors.dark[6] },
             }}
           />
         </Stack>
@@ -107,7 +114,6 @@ export default function ThemeComparison({
               <Title
                 order={3}
                 style={{
-                  color: theme.colors.dark[6],
                   fontSize: isMobile ? "1.2rem" : "1.5rem",
                 }}
               >
@@ -122,7 +128,6 @@ export default function ThemeComparison({
               <Title
                 order={3}
                 style={{
-                  color: theme.colors.dark[6],
                   fontSize: isMobile ? "1.2rem" : "1.5rem",
                 }}
               >
@@ -134,16 +139,11 @@ export default function ThemeComparison({
         )}
 
         {selectedPreset && differences.length > 0 && (
-          <Paper
-            p={isMobile ? "xs" : "md"}
-            radius="sm"
-            style={{ backgroundColor: theme.colors.gray[1] }}
-          >
+          <Paper p={isMobile ? "xs" : "md"} radius="sm">
             <Title
               order={3}
               style={{
-                color: theme.colors.dark[6],
-                marginBottom: theme.spacing.sm,
+                marginBottom: mantineTheme.spacing.sm,
                 fontSize: isMobile ? "1.2rem" : "1.5rem",
               }}
             >
@@ -153,7 +153,6 @@ export default function ThemeComparison({
               <Text
                 key={index}
                 style={{
-                  color: theme.colors.dark[6],
                   fontSize: isMobile ? "0.9rem" : "1rem",
                 }}
               >
@@ -164,14 +163,9 @@ export default function ThemeComparison({
         )}
 
         {selectedPreset && differences.length === 0 && (
-          <Paper
-            p={isMobile ? "xs" : "md"}
-            radius="sm"
-            style={{ backgroundColor: theme.colors.gray[1] }}
-          >
+          <Paper p={isMobile ? "xs" : "md"} radius="sm">
             <Text
               style={{
-                color: theme.colors.dark[6],
                 fontSize: isMobile ? "0.9rem" : "1rem",
               }}
             >

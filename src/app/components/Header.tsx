@@ -8,16 +8,16 @@ import {
   Text,
   SimpleGrid,
   Stack,
+  useMantineTheme,
 } from "@mantine/core";
-import { IconBook } from "@tabler/icons-react";
+import { useMediaQuery } from "@mantine/hooks";
+import { IconBook, IconPalette } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
-export default function Header({
-  isMobile,
-}: {
-  isMobile: boolean | undefined;
-}) {
+export default function Header() {
   const navigate = useNavigate();
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   return (
     <Stack align="center" p="xs" mb="xl">
@@ -46,7 +46,7 @@ export default function Header({
       <SimpleGrid cols={2}>
         <Button
           variant="gradient"
-          leftSection={<IconBook size={20} />}
+          leftSection={<IconPalette size={20} />}
           onClick={() => navigate("/")}
         >
           ThemeGen
