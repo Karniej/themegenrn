@@ -8,22 +8,38 @@ import {
   Tabs,
   useMantineTheme,
   List,
+  Modal,
 } from "@mantine/core";
 
 import CodeBlock from "../components/CodeBlock";
 import {
+  presetsString,
   themeContextString,
   themeUsageExampleString,
   themedComponentsString,
 } from "../constants/codeSamples";
 import { useThemeContext } from "../store/themeContext";
+import { useCallback, useEffect, useState } from "react";
+import { ShareModal } from "../components/ShareModal";
 
 export default function Docs() {
   const { applyToWebsite, theme } = useThemeContext();
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const mantineTheme = useMantineTheme();
 
   const appliedTheme = applyToWebsite ? theme : mantineTheme;
+  const handleCopy = useCallback(() => {
+    if (Math.random() < 0.3) {
+      // 30% chance to show the modal on copy
+      setShowShareModal(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("copy", handleCopy);
+    return () => document.removeEventListener("copy", handleCopy);
+  }, [handleCopy]);
 
   return (
     <Container
@@ -87,6 +103,8 @@ export default function Docs() {
         <Tabs.List>
           <Tabs.Tab value="themed">Themed Components</Tabs.Tab>
           <Tabs.Tab value="context">Theme Context</Tabs.Tab>
+          <Tabs.Tab value="presets">Presets</Tabs.Tab>
+          <Tabs.Tab value="example">Usage Example</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="themed" pt="xs">
@@ -110,15 +128,25 @@ export default function Docs() {
           </Text>
           <CodeBlock code={themeContextString} language="typescript" />
         </Tabs.Panel>
+        <Tabs.Panel value="presets" pt="xs">
+          <Title order={3} mb="md">
+            Presets
+          </Title>
+          <Text mb="md">Copy and paste this code with presets.</Text>
+          <CodeBlock code={presetsString} language="typescript" />
+        </Tabs.Panel>
+        <Tabs.Panel value="example" pt="xs">
+          <Title order={3} mb="md">
+            Usage Example
+          </Title>
+          <Text mb="md">Copy and paste this code with presets.</Text>
+          <CodeBlock code={themeUsageExampleString} language="typescript" />
+        </Tabs.Panel>
       </Tabs>
-
-      <Title order={2} mb="md">
-        Usage Example
-      </Title>
-      <Text mb="md">
-        Here&apos;s a simple example of how to use Themegen in your app:
-      </Text>
-      <CodeBlock code={themeUsageExampleString} language="typescript" />
+      <ShareModal
+        opened={showShareModal}
+        onClose={() => setShowShareModal(false)}
+      />
     </Container>
   );
 }

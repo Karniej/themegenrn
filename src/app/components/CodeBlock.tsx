@@ -17,7 +17,7 @@ const CodeBlock = ({ code, language }: { code: string; language: string }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(code).then(() => {
       setCopyIndicator(true);
-      setTimeout(() => setCopyIndicator(false), 2000); // Hide after 2 seconds
+      setTimeout(() => setCopyIndicator(false), 2000);
     });
   };
 

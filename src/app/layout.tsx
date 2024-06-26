@@ -10,6 +10,7 @@ import { ThemeProvider } from "./store/themeContext";
 import Header from "./components/Header";
 import { GlobalStyles } from "./components/GlobalStyles";
 import { metadata } from "./config/meteadata";
+import { Analytics } from "./components/Analytics";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
         <head>
           <link rel="icon" href="/logo.png" type="image/png" />
         </head>
+        <Analytics />
       </head>
       <body className={poppins.className}>
         <MantineProvider>

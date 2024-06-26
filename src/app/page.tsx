@@ -12,7 +12,6 @@ import {
   SimpleGrid,
   ActionIcon,
   useMantineTheme,
-  Burger,
   Title,
   useMantineColorScheme,
 } from "@mantine/core";
@@ -47,23 +46,24 @@ export default function Home() {
     showComparison,
     setShowComparison,
     accessibilityWarnings,
-    updateTheme,
-    applyToWebsite,
     theme,
     setCurrentTheme,
     currPresetName,
     handlePresetChange,
     setApplyToWebsite,
+    applyToWebsite,
   } = useThemeContext();
 
   const mantineTheme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${mantineTheme.breakpoints.sm})`);
   const currentTheme = applyToWebsite ? theme : mantineTheme;
   const { setColorScheme, colorScheme } = useMantineColorScheme();
+
   const handleSwitch = () => {
     setCurrentTheme(colorScheme === "dark" ? "light" : "dark");
     setColorScheme(colorScheme === "dark" ? "light" : "dark");
   };
+
   return (
     <Container
       size="lg"
@@ -92,6 +92,7 @@ export default function Home() {
           label="Apply to website"
         />
       </Group>
+
       <Stack>
         <SimpleGrid cols={isMobile ? 1 : 5} mb={isMobile ? "xs" : "lg"}>
           <Select
@@ -142,6 +143,7 @@ export default function Home() {
         </SimpleGrid>
         <AccessibilityWarnings warnings={accessibilityWarnings} />
       </Stack>
+
       <Group p="md" justify="center">
         <ActionIcon
           size="lg"
@@ -173,6 +175,7 @@ export default function Home() {
           <IconBrandGithubFilled size={18} stroke={1.5} />
         </ActionIcon>
       </Group>
+
       <Modal
         opened={showComparison}
         onClose={() => setShowComparison(false)}

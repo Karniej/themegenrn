@@ -8,10 +8,13 @@ import {
   SimpleGrid,
   Stack,
   useMantineTheme,
+  Group,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconBook, IconPalette } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { Features } from "./Features";
+import { HowItWorks } from "./HowItWorks";
 
 export default function Header() {
   const router = useRouter();

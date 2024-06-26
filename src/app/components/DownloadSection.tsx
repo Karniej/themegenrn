@@ -1,9 +1,8 @@
 /** @format */
 "use_client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { Stack, TextInput, Button, Group, Tooltip } from "@mantine/core";
-import { Theme } from "../types/theme";
 import {
   IconCopy,
   IconDownload,
@@ -11,6 +10,7 @@ import {
   IconUpload,
 } from "@tabler/icons-react";
 import { useThemeContext } from "../store/themeContext";
+import { ShareModal } from "./ShareModal";
 
 export default function DownloadSection({}) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,7 +26,17 @@ export default function DownloadSection({}) {
   const lightTheme = currentThemes.light;
   const darkTheme = currentThemes.dark;
   const [copyIndicator, setCopyIndicator] = useState(false);
-  const handleExport = () => {
+  const [exportCount, setExportCount] = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const handleExport = useCallback(() => {
+    setExportCount((prevCount) => {
+      const newCount = prevCount + 1;
+      if (newCount % 3 === 0) {
+        setShowShareModal(true);
+      }
+      return newCount;
+    });
     const themes = {
       [themeName]: {
         light: lightTheme,
@@ -43,7 +53,7 @@ export default function DownloadSection({}) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  };
+  }, [themeName, lightTheme, darkTheme]);
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -69,7 +79,7 @@ export default function DownloadSection({}) {
   const handleCopy = () => {
     navigator.clipboard.writeText(shareURL).then(() => {
       setCopyIndicator(true);
-      setTimeout(() => setCopyIndicator(false), 2000); // Hide after 2 seconds
+      setTimeout(() => setCopyIndicator(false), 2000);
     });
   };
 
@@ -131,6 +141,10 @@ export default function DownloadSection({}) {
           }
         />
       )}
+      <ShareModal
+        opened={showShareModal}
+        onClose={() => setShowShareModal(false)}
+      />
     </Stack>
   );
 }

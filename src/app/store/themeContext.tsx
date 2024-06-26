@@ -46,7 +46,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [showComparison, setShowComparison] = useState(false);
   const [currPresetName, setCurrentPresetName] = useState<string | null>(null);
 
-  // History management
   const initialLight: Theme = presets.Gruvbox.light;
   const initialDark: Theme = presets.Gruvbox.dark;
   const [history, setHistory] = useState<HistoryEntry[]>([

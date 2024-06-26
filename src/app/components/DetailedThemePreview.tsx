@@ -39,7 +39,7 @@ export default function DetailedThemePreview({
   return (
     <Paper
       p="0"
-      radius={theme.roundness.md} // Use theme.roundness
+      radius={theme.roundness.md}
       style={{
         backgroundColor: theme.colors.background,
         color: theme.colors.text,
@@ -51,7 +51,7 @@ export default function DetailedThemePreview({
       <Stack p="md">
         <Paper
           p="md"
-          radius={theme.roundness.sm} // Use theme.roundness
+          radius={theme.roundness.sm}
           style={{
             backgroundColor: theme.colors.card,
             borderBottom: `1px solid ${theme.colors.border}`,
@@ -66,7 +66,7 @@ export default function DetailedThemePreview({
               style={{
                 backgroundColor: theme.colors.primary,
                 color: theme.colors.background,
-                borderRadius: theme.roundness.xs, // Use theme.roundness
+                borderRadius: theme.roundness.xs,
               }}
             >
               Action
@@ -74,11 +74,10 @@ export default function DetailedThemePreview({
           </Group>
         </Paper>
 
-        {/* Success and Error examples */}
         <Group justify="center" grow>
           <Badge
             p="sm"
-            radius={theme.roundness.sm} // Use theme.roundness
+            radius={theme.roundness.sm}
             style={{
               backgroundColor: theme.colors.success,
               ...theme.shadows.sm,
@@ -90,7 +89,7 @@ export default function DetailedThemePreview({
           </Badge>
           <Badge
             p="sm"
-            radius={theme.roundness.sm} // Use theme.roundness
+            radius={theme.roundness.sm}
             style={{
               backgroundColor: theme.colors.error,
               ...theme.shadows.sm,
@@ -102,7 +101,6 @@ export default function DetailedThemePreview({
           </Badge>
         </Group>
 
-        {/* List of items */}
         <List p="sm" fs="sm" center h={430}>
           <List.Item
             py="sm"
@@ -130,10 +128,9 @@ export default function DetailedThemePreview({
           </List.Item>
         </List>
 
-        {/* Footer */}
         <Paper
           p="md"
-          radius={theme.roundness.sm} // Use theme.roundness
+          radius={theme.roundness.sm}
           style={{
             backgroundColor: theme.colors.card,
             borderTop: `1px solid ${theme.colors.border}`,

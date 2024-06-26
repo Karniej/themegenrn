@@ -59,7 +59,7 @@ function getContrastColor(color: string, light: string, dark: string): string {
 function generateAccessibleColor(targetColor: string, bgColor: string): string {
   let color = colord(targetColor);
   let attempts = 0;
-  const maxAttempts = 20; // Prevent infinite loop
+  const maxAttempts = 20;
 
   while (color.contrast(bgColor) < 4.5 && attempts < maxAttempts) {
     color = color.darken(0.05);
@@ -164,6 +164,6 @@ export function generatePalette(baseColor: string) {
     return { light: lightTheme, dark: darkTheme };
   } catch (error) {
     console.error("Error generating palette:", error);
-    throw error; // Re-throw the error to be handled by the caller
+    throw error;
   }
 }
