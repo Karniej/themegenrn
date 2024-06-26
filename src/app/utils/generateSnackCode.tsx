@@ -2,7 +2,7 @@
 
 // utils/snackGenerator.ts
 
-import { Theme } from "./presets"; // Adjust the import path as needed
+import { Theme } from "../types/theme"; // Adjust the import path as needed
 
 function generateSnackCode(theme: Theme): string {
   return `
