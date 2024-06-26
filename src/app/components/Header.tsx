@@ -1,8 +1,7 @@
 /** @format */
-
+"use client";
 import {
   Button,
-  Group,
   Image,
   Title,
   Text,
@@ -12,10 +11,10 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IconBook, IconPalette } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
@@ -47,14 +46,14 @@ export default function Header() {
         <Button
           variant="gradient"
           leftSection={<IconPalette size={20} />}
-          onClick={() => navigate("/")}
+          onClick={() => router.push("/")}
         >
           ThemeGen
         </Button>
         <Button
           variant="gradient"
           leftSection={<IconBook size={20} />}
-          onClick={() => navigate("/docs")}
+          onClick={() => router.push("/docs")}
         >
           Docs
         </Button>

@@ -1,28 +1,26 @@
 /** @format */
-
+"use client";
 import "@mantine/core/styles.css";
 import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider, ColorSchemeScript } from "@mantine/core";
 import { Poppins } from "next/font/google";
 import App from "./app";
+import { ThemeProvider } from "./store/themeContext";
+import Header from "./components/Header";
+import { GlobalStyles } from "./components/GlobalStyles";
+import { metadata } from "./config/meteadata";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Themegen.xyz",
-  description: "Theme generator for Tamagui and React Native StyleSheet",
-};
-
 export default function RootLayout({
   children,
+  pageProps,
 }: {
   children: React.ReactNode;
+  pageProps: any;
 }) {
   return (
     <html lang="en">
@@ -34,7 +32,11 @@ export default function RootLayout({
       </head>
       <body className={poppins.className}>
         <MantineProvider>
-          <App />
+          <ThemeProvider>
+            <Header />
+            <GlobalStyles />
+            {children}
+          </ThemeProvider>
         </MantineProvider>
       </body>
     </html>

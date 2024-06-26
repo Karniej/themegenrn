@@ -1,4 +1,5 @@
 /** @format */
+"use client";
 
 import React, {
   createContext,
@@ -161,15 +162,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [addToHistory]);
 
   useEffect(() => {
-    if (applyToWebsite) {
-      document.body.style.backgroundColor =
-        currentThemes[currentTheme].colors.background;
-      document.body.style.color = currentThemes[currentTheme].colors.text;
-    } else {
-      document.body.style.backgroundColor =
-        mantineTheme.colors.gray[colorScheme === "dark" ? 9 : 0];
-      document.body.style.color =
-        mantineTheme.colors.gray[colorScheme === "dark" ? 0 : 9];
+    if (typeof document !== "undefined") {
+      if (applyToWebsite) {
+        document.body.style.backgroundColor =
+          currentThemes[currentTheme].colors.background;
+        document.body.style.color = currentThemes[currentTheme].colors.text;
+      } else {
+        document.body.style.backgroundColor =
+          mantineTheme.colors.gray[colorScheme === "dark" ? 9 : 0];
+        document.body.style.color =
+          mantineTheme.colors.gray[colorScheme === "dark" ? 0 : 9];
+      }
     }
   }, [
     addToHistory,

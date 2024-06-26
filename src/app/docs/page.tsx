@@ -1,28 +1,24 @@
 /** @format */
 "use client";
-import React, { useEffect } from "react";
+
 import {
   Container,
   Title,
   Text,
-  Paper,
   Tabs,
-  Box,
   useMantineTheme,
   List,
 } from "@mantine/core";
 
-import { presets } from "./constants/presets";
-import { useLocation } from "react-router-dom";
-import CodeBlock from "./components/CodeBlock";
+import CodeBlock from "../components/CodeBlock";
 import {
   themeContextString,
   themeUsageExampleString,
   themedComponentsString,
-} from "./constants/codeSamples";
-import { useThemeContext } from "./store/themeContext";
+} from "../constants/codeSamples";
+import { useThemeContext } from "../store/themeContext";
 
-export function DocsPage() {
+export default function Docs() {
   const { applyToWebsite, theme } = useThemeContext();
 
   const mantineTheme = useMantineTheme();
